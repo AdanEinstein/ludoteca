@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ludoteca</title>
+<body style="margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#111;color:#eee;font:36px sans-serif;text-align:center">
+<p id="m">Conectando à Ludoteca...</p>
+<script>
+// Casca do app Tizen: espera o servidor responder e então abre a Ludoteca em tela cheia.
+// O conteúdo vem do servidor, então atualizar jogos não exige reinstalar o app.
+// ponytail: endereço fixo. Se o IP do PC mudar, reserve o IP no roteador ou edite aqui e reinstale.
+var SERVER = 'http://192.168.1.10:3000/';
+
+function tentar() {
+  // no-cors basta: só queremos saber se o servidor está de pé (a resposta é opaca, erro de rede rejeita)
+  fetch(SERVER, { mode: 'no-cors', cache: 'no-store' }).then(
+    function () { location.replace(SERVER); },
+    function () {
+      document.getElementById('m').textContent = 'Servidor da Ludoteca não encontrado em ' + SERVER + '. Tentando de novo...';
+      setTimeout(tentar, 2000);
+    }
+  );
+}
+tentar();
+
+// Voltar do controle remoto (10009) fecha o app enquanto espera o servidor.
+document.addEventListener('keydown', function (e) {
+  if (e.keyCode === 10009 && window.tizen) tizen.application.getCurrentApplication().exit();
+});
+</script>
