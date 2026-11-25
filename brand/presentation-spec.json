@@ -1,0 +1,36 @@
+{
+  "brand": "Ludoteca",
+  "tagline": "Jogos calmos para jogar juntos na sala",
+  "brief": "Plataforma de jogos locais: a TV mostra o jogo e o celular é o controle. Primeiro público: crianças autistas com interesse em números e letras, em jogos calmos, previsíveis e personalizáveis. Projeto pessoal, sem cadastro e sem coleta de dados.",
+  "adjectives": ["calma", "previsível", "acolhedora", "lúdica"],
+  "criteria": "Sucesso: legível a 16 px, calma (poucas formas, sem movimento nem cores berrantes), distinta dos clichês de TV e controle, funciona em uma cor.",
+  "industry": "consumer-app",
+  "nav": ["Jogos", "Como parear", "Para pais"],
+  "brand_color": "#1F3B57",
+  "tile_color": "#1F3B57",
+  "greyscale": false,
+  "final": true,
+  "designer": "Ludoteca",
+  "round": 2,
+  "concepts": [
+    {
+      "name": "Peça no canto",
+      "symbol": "final/ludoteca-symbol.svg",
+      "symbol_on_tile": "final/ludoteca-symbol-reversed.svg",
+      "symbol_on_dark": "final/ludoteca-symbol-reversed.svg",
+      "lockup": "final/ludoteca-horizontal.svg",
+      "lockup_on_dark": "final/ludoteca-horizontal-reversed.svg",
+      "stacked": "final/ludoteca-stacked.svg",
+      "stacked_on_tile": "final/ludoteca-stacked-reversed.svg",
+      "stacked_on_dark": "final/ludoteca-stacked-reversed.svg",
+      "avatar": "final/ludoteca-favicon.svg",
+      "idea": "Uma peça de jogo apoiada no canto de um L: o jogo tem um lugar seguro.",
+      "rationale": [
+        "Duas formas simples e estáveis, sem movimento nem detalhe fino, adequadas a um público sensível a estímulos",
+        "O L de Ludoteca vira o canto, e a peça redonda lembra jogo sem desenhar TV ou controle",
+        "Azul-noite e âmbar em contraste calmo, com uma versão pequena e uma versão sobre fundo escuro"
+      ]
+    }
+  ],
+  "recommendation": "Peça no canto, em azul-noite com a peça âmbar."
+}

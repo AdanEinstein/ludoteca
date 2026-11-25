@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ludoteca">
+  <title>Ludoteca, grade L</title>
+  <g fill="#000">
+    <!-- L feito de 5 pontos numa grade 3x3 (passo 72, ponto 48) -->
+    <circle cx="56" cy="56" r="24"/>
+    <circle cx="56" cy="128" r="24"/>
+    <circle cx="56" cy="200" r="24"/>
+    <circle cx="128" cy="200" r="24"/>
+    <circle cx="200" cy="200" r="24"/>
+    <!-- casas vazias do tabuleiro -->
+    <circle cx="128" cy="56" r="9"/>
+    <circle cx="200" cy="56" r="9"/>
+    <circle cx="128" cy="128" r="9"/>
+    <circle cx="200" cy="128" r="9"/>
+  </g>
+</svg>

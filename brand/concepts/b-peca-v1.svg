@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ludoteca">
+  <title>Ludoteca, peça no canto</title>
+  <g fill="#000">
+    <!-- L = estante/canto; cantos externos arredondados, canto interno vivo para abrigar a peça -->
+    <path d="M60 36H84A10 10 0 0 1 94 46V176H196A10 10 0 0 1 206 186V210A10 10 0 0 1 196 220H74A24 24 0 0 1 50 196V46A10 10 0 0 1 60 36Z"/>
+    <!-- peça apoiada no canto, folga de 14 nas duas paredes -->
+    <circle cx="148" cy="122" r="40"/>
+  </g>
+</svg>

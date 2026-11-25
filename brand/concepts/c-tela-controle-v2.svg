@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ludoteca">
+  <title>Ludoteca, tela e controle</title>
+  <g fill="#000" fill-rule="evenodd">
+    <!-- TV (148x112, r18) com uma peça vazada na tela -->
+    <path d="M46 72H158A18 18 0 0 1 176 90V166A18 18 0 0 1 158 184H46A18 18 0 0 1 28 166V90A18 18 0 0 1 46 72Z M82 128A20 20 0 1 0 122 128A20 20 0 1 0 82 128Z"/>
+    <!-- celular (36x80, r10), base alinhada à da TV, folga de 16 -->
+    <rect x="192" y="104" width="36" height="80" rx="10"/>
+  </g>
+</svg>

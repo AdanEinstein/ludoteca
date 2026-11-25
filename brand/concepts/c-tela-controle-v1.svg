@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ludoteca">
+  <title>Ludoteca, tela e controle</title>
+  <g fill="#000" fill-rule="evenodd">
+    <!-- TV com o canto inferior direito recortado e uma peça vazada na tela -->
+    <path d="M58 52H198A20 20 0 0 1 218 72V94H170A20 20 0 0 0 150 114V162A10 10 0 0 1 140 172H58A20 20 0 0 1 38 152V72A20 20 0 0 1 58 52Z M76 112A20 20 0 1 0 116 112A20 20 0 1 0 76 112Z"/>
+    <!-- celular encaixado no recorte, folga de 10 -->
+    <rect x="160" y="104" width="46" height="100" rx="12"/>
+  </g>
+</svg>
