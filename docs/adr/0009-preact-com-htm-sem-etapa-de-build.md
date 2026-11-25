@@ -27,4 +27,4 @@ dependências sem necessidade, e a TV Samsung roda módulos ES nativos (ADR 0005
 - Uma dependência de execução nova: `htm` (cerca de 10 KB no navegador, Preact incluso). Versão fixada (sem `^`).
 - Sem JSX nem checagem de tipos. Erros de template aparecem na execução, então os fluxos são cobertos pelos testes e pela verificação no navegador.
 - O servidor precisa de `node_modules` presente para servir `/vendor/preact.js`.
-- **Astryx e StyleX ficaram sem uso** (o Astryx é baseado em React). Recomendo removê-los do `package.json`. Decisão do autor.
+- Astryx e StyleX ficaram sem uso (o Astryx é baseado em React) e foram removidos pelo [ADR 0011](0011-remover-astryx-e-stylex.md).

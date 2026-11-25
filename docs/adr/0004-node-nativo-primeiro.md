@@ -20,9 +20,8 @@ O público é infantil, então a segurança pesa mais.
   um leitor de QR aqui para validá-lo. Manter o pacote é mais seguro do que um QR incorreto.
 
 ## Situação das dependências existentes
-- `ws`: removido quando `server/ws.js` entrar (este ADR).
-- `@astryxdesign/*` e `@stylexjs/stylex`: instalados antes desta decisão, a pedido do autor. **Não são usados** nas telas dos jogos
-  (ver ADR 0005). Seguem no `package.json` até o autor decidir se removê-los.
+- `ws`: **removido**; `server/ws.ts` o substituiu.
+- `@astryxdesign/*` e `@stylexjs/stylex`: instalados antes desta decisão e **removidos** (ADR 0011).
 
 ## Consequências
 - Mais código nosso para manter (WebSocket), compensado por testes.

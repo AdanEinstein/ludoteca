@@ -17,3 +17,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0008](0008-codigo-em-ingles-interface-em-portugues.md) | Código em inglês, interface em português | aceito |
 | [0009](0009-preact-com-htm-sem-etapa-de-build.md) | Preact com htm, sem etapa de build | aceito (substitui em parte o 0005) |
 | [0010](0010-typescript-executado-direto-pelo-node.md) | TypeScript executado direto pelo Node | aceito |
+| [0011](0011-remover-astryx-e-stylex.md) | Remover Astryx e StyleX | aceito |

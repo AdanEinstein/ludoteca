@@ -13,14 +13,10 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "dependencies": {
-    "@astryxdesign/core": "^0.7.17",
-    "@astryxdesign/theme-neutral": "^0.7.17",
-    "@stylexjs/stylex": "^0.19.2",
     "htm": "3.1.1",
-    "qrcode": "^1.5.4"
+    "qrcode": "1.5.4"
   },
   "devDependencies": {
-    "@astryxdesign/cli": "^0.7.17",
     "@types/node": "24.19.2",
     "preact": "10.29.8",
     "typescript": "7.0.2"
