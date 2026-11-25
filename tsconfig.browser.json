@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": [],
+    "paths": { "/vendor/preact.js": ["./node_modules/htm/preact/index.d.ts"] }
+  },
+  "include": ["public", "games/*/tv.ts", "games/*/pad.ts"]
+}
