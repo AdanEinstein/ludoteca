@@ -30,15 +30,15 @@ Pacote `LudotecaTV`, app id `LudotecaTV.Ludoteca`. TV alvo: Samsung `UN65DU7700G
    curl -X POST http://192.168.1.4:8001/api/v2/applications/LudotecaTV.Ludoteca
    curl http://192.168.1.4:8001/api/v2/applications/LudotecaTV.Ludoteca   # running/visible
    ```
-   Com o servidor da Ludoteca de pé (`pnpm m0`), a TV deve abrir direto na tela do QR.
+   Com o servidor da Ludoteca de pé (`pnpm start`), a TV deve abrir direto na tela do QR.
 
 ## Se algo não funcionar
 
-- **App abre e fica na tela "Conectando"**: o servidor não está acessível em `192.168.1.10:3000`. Suba com `pnpm m0`.
+- **App abre e fica na tela "Conectando"**: o servidor não está acessível em `192.168.1.10:3000`. Suba com `pnpm start`.
 - **Abre, mas não navega para o servidor**: adicione `<tizen:allow-navigation>*</tizen:allow-navigation>` no `config.xml`
   (ainda não confirmado que seja necessário) e reinstale.
 - **IP do PC mudou**: reserve o IP no roteador, ou edite `SERVER` em `index.html` e reinstale.
-- **Voltar do controle remoto não fecha o app**: o handler da tecla 10009 está na casca e em `m0/tv.html`, mas só funciona se
+- **Voltar do controle remoto não fecha o app**: o handler da tecla 10009 está na casca e em `public/tv.ts`, mas só funciona se
   o objeto `tizen` estiver disponível na página remota. Ainda não verificado.
 
 ## Limites
