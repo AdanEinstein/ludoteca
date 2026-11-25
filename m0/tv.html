@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Ludoteca M0 - TV</title>
+<style>#qr svg{width:360px;height:360px;display:block}</style>
+<body style="margin:0;padding:40px;background:#111;color:#eee;font:32px sans-serif">
+<h1>Ludoteca</h1>
+<div id="qr" style="width:360px;height:360px;background:#fff"></div>
+<p>Esta TV: <b id="nome" style="font-size:48px">...</b></p>
+<p id="st">conectando...</p>
+<p>controles: <b id="cnt">0</b> &nbsp; toques: <b id="n">0</b></p>
+<div id="join" style="display:none;margin-top:24px;padding:24px;background:#1e3a8a;border-radius:16px">
+  <p style="margin:0 0 16px">Um controle quer entrar. Aperte <b>OK</b> no controle remoto para aceitar.</p>
+  <button id="yes" style="font-size:32px;padding:12px 32px">Aceitar</button>
+  <button id="no" style="font-size:32px;padding:12px 32px">Recusar</button>
+</div>
+<pre id="feat" style="font-size:16px;color:#888"></pre>
+<script>
+// ES5 de propósito: se a TV velha não roda isso, já sabemos o piso.
+var $ = function (i) { return document.getElementById(i); };
+
+var f = [];
+function t(nome, fn) { var r; try { r = fn(); } catch (e) { r = false; } f.push((r ? 'OK  ' : 'NAO ') + nome); }
+t('WebSocket', function () { return !!window.WebSocket; });
+t('Promise', function () { return !!window.Promise; });
+t('fetch', function () { return !!window.fetch; });
+t('arrow/let/const', function () { return eval('(()=>{let a=1;const b=2;return a+b})()') === 3; });
+t('async/await', function () { eval('(async function(){})'); return true; });
+t('modulos ES (Vite)', function () { return 'noModule' in document.createElement('script'); });
+t('canvas 2d', function () { return !!document.createElement('canvas').getContext('2d'); });
+t('CSS grid', function () { return window.CSS && CSS.supports('display', 'grid'); });
+$('feat').textContent = f.join(' | ') + '\n' + navigator.userAgent;
+
+var ws, queue = [], ativos = {}, n = 0;
+
+function render() {
+  $('join').style.display = queue.length ? 'block' : 'none';
+  $('cnt').textContent = Object.keys(ativos).length;
+}
+function resp(tipo) {
+  var id = queue.shift();
+  if (!id) return;
+  ws.send(JSON.stringify({ t: tipo, id: id }));
+  if (tipo === 'accept') ativos[id] = 1;
+  render();
+}
+// Enter = OK do controle remoto. preventDefault evita o botão focado disparar um 2º aceite.
+document.onkeydown = function (e) {
+  // 10009 = Voltar no controle remoto Samsung: fecha o app Tizen (se existir `tizen`, ignora no navegador)
+  if (e.keyCode === 10009 && window.tizen) tizen.application.getCurrentApplication().exit();
+  if (e.keyCode === 13 && queue.length) { e.preventDefault(); resp('accept'); }
+};
+$('yes').onclick = function () { resp('accept'); };
+$('no').onclick = function () { resp('reject'); };
+
+function conn() {
+  ws = new WebSocket('ws://' + location.host + '/ws?tv');
+  ws.onopen = function () { $('st').textContent = 'abra o Ludoteca no celular (ou escaneie o QR)'; };
+  ws.onclose = function () {
+    $('st').textContent = 'desconectado, tentando de novo...';
+    $('qr').innerHTML = ''; queue = []; ativos = {}; render();
+    setTimeout(conn, 1000);
+  };
+  ws.onmessage = function (e) {
+    var m = JSON.parse(e.data), i;
+    if (m.t === 'room') { $('qr').innerHTML = m.qr; $('nome').textContent = m.name; }
+    else if (m.t === 'join') { queue.push(m.id); render(); }
+    else if (m.t === 'left') {
+      i = queue.indexOf(m.id); if (i >= 0) queue.splice(i, 1);
+      delete ativos[m.id]; render();
+    } else if (m.t === 'tap') {
+      $('n').textContent = ++n;
+      ws.send(JSON.stringify({ t: 'ack', id: m.id, ts: m.ts }));
+    }
+  };
+}
+conn();
+</script>
