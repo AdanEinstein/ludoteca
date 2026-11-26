@@ -1,4 +1,5 @@
 {
+  // Editor view: the whole repo in one project. The real checks are tsconfig.server.json and tsconfig.browser.json (pnpm typecheck).
   "compilerOptions": {
     "target": "ES2023",
     "module": "NodeNext",
@@ -9,6 +10,8 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"],
+    "paths": { "/vendor/preact.js": ["./node_modules/htm/preact/index.d.ts"] }
   }
 }
