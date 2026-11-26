@@ -26,7 +26,7 @@ export function PadView({ state, send }: { state: LettersState; send: (action: A
             return html`<li key=${index} style=${`--i:${i}`}>
               <button type="button" class=${tried ? 'tried' : ''} disabled=${tried} aria-label=${word} onClick=${() => send({ type: 'choose', value: index })}>
                 <${Picture} id=${id} />
-                <span class="word">${word}</span>
+                <span class=${`word${word.length > 10 ? ' longer' : word.length > 8 ? ' long' : ''}`}>${word}</span>
               </button>
             </li>`;
           })}

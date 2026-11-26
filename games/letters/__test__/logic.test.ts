@@ -15,6 +15,10 @@ const groupBy = <T, K>(items: readonly T[], key: (item: T) => K): Map<K, T[]> =>
   return groups;
 };
 
+test('the whole alphabet is there', () => {
+  assert.equal([...new Set(WORDS.map((w) => w.letter))].join(''), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+});
+
 test('every letter has at least five words, each starting with its letter, and the picture ids are unique', () => {
   assert.equal(new Set(WORDS.map((w) => w.id)).size, WORDS.length);
   assert.equal(new Set(WORDS.map((w) => w.word)).size, WORDS.length);

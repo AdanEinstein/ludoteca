@@ -4,12 +4,13 @@
 - Data: 2026-11-26
 
 ## Contexto
-O jogo tinha uma palavra por letra e sorteava o alvo e as opções sem memória (só evitava repetir o alvo da rodada anterior). Com 13 letras,
+O jogo tinha uma palavra por letra e sorteava o alvo e as opções sem memória (só evitava repetir o alvo da rodada anterior). Com poucas letras,
 a criança via as mesmas palavras, e as mesmas opções erradas, o tempo todo. O autor também pediu sons e animações ao acertar, como em "Quantos tem?".
 
 ## Decisão
-- **Catálogo:** cinco palavras por letra (65 no total), cada uma com a sua figura de formas simples em `art.ts`. Um teste exige pelo menos cinco por letra
-  e que a primeira letra de cada palavra (sem acento) seja a letra declarada.
+- **Catálogo:** o alfabeto inteiro (A a Z, com K, W e Y), cinco palavras por letra (130 no total), cada uma com a sua figura de formas simples
+  em `art.ts`. Testes exigem as 26 letras, pelo menos cinco palavras por letra e que a primeira letra de cada palavra (sem acento) seja a letra declarada.
+  Palavras longas (mais de 8 letras) encolhem a fonte nos cartões do celular para caber.
 - **Alvo sorteado em sacola, não ao acaso:** as letras vêm em voltas (cada letra uma vez por volta, em ordem aleatória, nunca a mesma letra duas vezes
   seguidas, nem na virada da volta). Dentro da letra, as palavras rodam: uma só volta a aparecer depois de todas as outras quatro. O estado guarda
   `lap` (letras que faltam na volta) e `seen` (palavras já usadas), e o jogo continua sendo função pura de `(estado, ação, rng)`.
@@ -27,6 +28,6 @@ a criança via as mesmas palavras, e as mesmas opções erradas, o tempo todo. O
 - **Emojis no lugar das figuras:** dependem da fonte da TV Samsung e fogem do visual próprio do jogo.
 
 ## Consequências
-- O estado cresce um pouco (`lap` e `seen`, no máximo 13 + 65 números), irrelevante para o WebSocket.
+- O estado cresce um pouco (`lap` e `seen`, no máximo 26 + 130 números), irrelevante para o WebSocket.
 - Existe agora código duplicado entre `games/numbers/` e `games/letters/` (confetes e áudio). A matemática dos confetes continua testada só em `numbers/__test__/particles.test.ts`.
-- Letra nova no catálogo: acrescentar cinco palavras e as figuras; o resto (voltas, opções) segue sozinho.
+- Palavra nova no catálogo: acrescentar a linha em `WORDS` e a figura em `art.ts`; as voltas e as opções seguem sozinhas.

@@ -30,6 +30,9 @@
 [data-game="letters"] .options button.tried { opacity: 0.25; }
 [data-game="letters"] .options .picture { width: 5.5rem; height: 5.5rem; }
 [data-game="letters"] .word { font-size: 1.5rem; font-weight: 700; }
+/* Long words (Unicórnio, Helicóptero) shrink so they fit the half-width cards of a narrow phone. */
+[data-game="letters"] .options .word.long { font-size: 1.2rem; }
+[data-game="letters"] .options .word.longer { font-size: 1.05rem; }
 
 [data-game="letters"] .answer { display: grid; justify-items: center; gap: 0.6rem; }
 [data-game="letters"] .answer .picture { width: 10rem; height: 10rem; animation: letters-bounce 1100ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
