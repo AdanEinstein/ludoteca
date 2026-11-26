@@ -2,7 +2,7 @@
 // and this file checks it without anyone writing new tests for the contract.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { games, themes } from './index.ts';
 import type { GameModule, GameState } from './types.ts';
 
@@ -133,6 +133,42 @@ test('logoProblems: accepts a plain SVG and flags unsafe or sloppy ones', () => 
 for (const id of Object.keys(games)) {
   test(`game "${id}": logo.svg is a safe, square image`, () => {
     assert.deepEqual(logoProblems(readFileSync(file(id, 'logo.svg'), 'utf8')), []);
+  });
+}
+
+/** Audio from a public library lives in `sounds/`. Every file must be credited (source and license) and the folder stays small for the TV. */
+export function soundProblems(files: Array<{ name: string; bytes: number }>, credits: string | null): string[] {
+  const problems: string[] = [];
+  if (files.length === 0) return problems;
+  if (credits === null) return ['sounds/ needs CREDITS.md (source and license of every file)'];
+  if (!/https?:\/\//.test(credits) || !/CC0|CC-BY|Creative Commons|public domain/i.test(credits)) problems.push('CREDITS.md must give the source URL and the license (CC0, CC-BY, ...)');
+  for (const file of files) {
+    if (!/\.(wav|ogg|mp3)$/i.test(file.name)) problems.push(`${file.name}: only .wav, .ogg or .mp3`);
+    if (!credits.includes(file.name)) problems.push(`${file.name} is not credited in CREDITS.md`);
+  }
+  if (files.reduce((sum, f) => sum + f.bytes, 0) > 500 * 1024) problems.push('sounds/ is over 500 KB (the TV loads it over Wi-Fi)');
+  return problems;
+}
+
+test('soundProblems: needs credits, a source and license, every file listed, and a small size', () => {
+  const ok = 'x.wav from https://example.org, license CC0';
+  assert.deepEqual(soundProblems([], null), []);
+  assert.deepEqual(soundProblems([{ name: 'x.wav', bytes: 1000 }], ok), []);
+  assert.equal(soundProblems([{ name: 'x.wav', bytes: 1000 }], null).length, 1);
+  assert.equal(soundProblems([{ name: 'x.wav', bytes: 1000 }], 'x.wav, no source').length, 1);
+  assert.equal(soundProblems([{ name: 'y.wav', bytes: 1000 }], ok).length, 1);
+  assert.equal(soundProblems([{ name: 'x.flac', bytes: 1000 }], 'x.flac https://e.org CC0').length, 1);
+  assert.equal(soundProblems([{ name: 'x.wav', bytes: 600 * 1024 }], ok).length, 1);
+});
+
+for (const id of Object.keys(games)) {
+  test(`game "${id}": sounds are credited and small`, () => {
+    const dir = new URL(`${id}/sounds/`, here);
+    const files = existsSync(dir)
+      ? readdirSync(dir).filter((name) => !/^CREDITS\.md$/.test(name)).map((name) => ({ name, bytes: statSync(new URL(name, dir)).size }))
+      : [];
+    const credits = existsSync(new URL('CREDITS.md', dir)) ? readFileSync(new URL('CREDITS.md', dir), 'utf8') : null;
+    assert.deepEqual(soundProblems(files, credits), []);
   });
 }
 

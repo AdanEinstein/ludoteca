@@ -1,6 +1,6 @@
 # 0017. Design sensorial dos jogos infantis (som, movimento e ajuda)
 
-- Status: aceito
+- Status: aceito (a parte "Som" foi substituída pelo [ADR 0018](0018-sons-de-biblioteca-publica-e-confetes-gentis.md): gravações CC0 no lugar de tons gerados; as regras de volume, "só na TV" e da opção de desligar continuam)
 - Data: 2026-11-26
 
 ## Contexto

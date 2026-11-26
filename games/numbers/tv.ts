@@ -2,7 +2,8 @@
 // slowly; a right answer lights them up one by one and then shows the number. Each round has its own shape and color.
 // The platform loads tv.css and mounts this inside <div data-game="numbers"> (ADR 0012).
 import { html, useEffect, useRef } from '/vendor/preact.js';
-import { celebrate, countTones, unlock } from './audio.ts';
+import { celebrate, countTones, preload, unlock } from './audio.ts';
+import { useConfetti } from './confetti.ts';
 import type { NumbersState } from './logic.ts';
 
 const STEP_MS = 420; // time between pieces: the pace of counting (tv.css uses the same value in --step)
@@ -24,16 +25,21 @@ export function TvView({ state }: { state: NumbersState }) {
 
   useEffect(() => {
     unlock();
+    if (state.sound) void preload();
     if (state.sound && !state.solved) countTones(state.target, step); // the round starts: the pieces appear counting
   }, [state.round]);
   useChange(hints, () => state.sound && countTones(state.target, step));
   useChange(state.solved, (solved) => solved && state.sound && celebrate(state.target, step));
+
+  // confetti rains once the pieces have lit up one by one and the number appears
+  const confetti = useConfetti(state.solved, { count: 70, delayMs: state.target * STEP_MS * 0.7 + 200 });
 
   const counting = hints === 0 ? '' : hints % 2 ? 'b' : 'a'; // alternates so the CSS animation restarts each time
   return html`<section class=${`tv shape-${state.shape}${state.solved ? ' solved' : ''}`} data-count=${counting} key=${state.round}
     style=${`--n:${state.target}`}>
     <header class="title"><img src=${LOGO} alt="" /><h1>Quantos tem?</h1></header>
     <p class=${state.solved ? 'number shown' : 'number'} aria-live="polite">${state.solved ? state.target : '?'}</p>
+    <canvas class="confetti" ref=${confetti} aria-hidden="true"></canvas>
     <ul class="pieces" aria-label="Quantos tem?">
       ${Array.from({ length: state.target }, (_, i) => html`<li class="piece" key=${i} style=${`--i:${i}`}></li>`)}
     </ul>

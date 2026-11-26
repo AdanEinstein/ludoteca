@@ -1,6 +1,7 @@
 // Controller of "Quantos tem?": number buttons with the quantity drawn under each numeral; a wrong answer only dims the option;
 // "Contar de novo" asks the TV to count again; solving shows a single big "Próximo" button. The phone makes no sound.
 import { html } from '/vendor/preact.js';
+import { useConfetti } from './confetti.ts';
 import type { Action } from '../types.ts';
 import type { NumbersState } from './logic.ts';
 
@@ -8,7 +9,9 @@ const LOGO = new URL('./logo.svg', import.meta.url).pathname;
 
 export function PadView({ state, send }: { state: NumbersState; send: (action: Action) => void }) {
   const options = Array.from({ length: state.max }, (_, i) => i + 1);
+  const confetti = useConfetti(state.solved, { count: 36, delayMs: 200 }); // a smaller rain on the phone too
   return html`<section class=${`pad${state.solved ? ' solved' : ''}`} key=${state.round}>
+    <canvas class="confetti" ref=${confetti} aria-hidden="true"></canvas>
     <header class="title"><img src=${LOGO} alt="" /><h2>${state.solved ? 'Isso!' : 'Quantos tem?'}</h2></header>
     ${state.solved
       ? html`<p class="answer" aria-live="polite">${state.target}</p>

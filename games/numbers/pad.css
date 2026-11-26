@@ -36,5 +36,7 @@
 [data-game="numbers"] .next { width: 100%; min-height: 8rem; font-size: 2.2rem; font-weight: 700; background: var(--sun); color: #3b2a00; animation: numbers-rise 700ms 600ms ease-out backwards; }
 [data-game="numbers"] .again { justify-self: center; padding: 0.9rem 1.6rem; font-size: 1.15rem; background: transparent; color: var(--ink); box-shadow: inset 0 0 0 0.15rem rgb(255 246 224 / 0.55); }
 
+[data-game="numbers"] .confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
 @keyframes numbers-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes numbers-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: none; } }

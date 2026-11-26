@@ -15,4 +15,5 @@ Cada jogo tem identidade própria: a plataforma entrega uma tela em branco e nã
 6. Jogos para crianças autistas seguem o [ADR 0017](adr/0017-design-sensorial-dos-jogos-infantis.md): sem relógio, placar ou erro; errar é neutro; movimento lento; som só na TV, gerado, baixo e com opção de desligar.
 7. `logic.test.ts` com as regras do jogo. O contrato geral é conferido sozinho por `games/contract.test.ts`.
 8. Registre em `games/index.ts` (e o tema, se for novo). Enquanto estiver em obras, use `draft: true` e rode `pnpm dev`.
-9. `pnpm test` e `pnpm typecheck`.
+9. Áudio: só de biblioteca pública CC0, em `sounds/` com `CREDITS.md` (fonte, licença, cada arquivo); poucos arquivos curtos e tons gerados como reserva ([ADR 0018](adr/0018-sons-de-biblioteca-publica-e-confetes-gentis.md)).
+10. `pnpm test` e `pnpm typecheck`.

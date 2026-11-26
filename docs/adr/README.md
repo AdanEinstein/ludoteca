@@ -24,3 +24,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0015](0015-logo-animada-lenta-e-uma-vez.md) | Logo animada: lenta, uma vez, e nunca sobre um jogo | aceito |
 | [0016](0016-catalogo-no-controle-e-logo-por-jogo.md) | Catálogo no controle e uma logo por jogo | aceito |
 | [0017](0017-design-sensorial-dos-jogos-infantis.md) | Design sensorial dos jogos infantis (som, movimento e ajuda) | aceito |
+| [0018](0018-sons-de-biblioteca-publica-e-confetes-gentis.md) | Sons de biblioteca pública (CC0) e confetes gentis | aceito |

@@ -42,6 +42,8 @@
 /* Right answer: the pieces light up one by one, a little faster, and stay slightly larger and brighter; then the number appears. */
 [data-game="numbers"] .solved .piece { animation: numbers-lit 900ms calc(var(--i) * var(--step) * 0.7) ease-in-out both; }
 
+[data-game="numbers"] .confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
 @keyframes numbers-fade { from { opacity: 0; } to { opacity: 0.85; } }
 @keyframes numbers-in { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: none; } }
 @keyframes numbers-count-a { 0%, 100% { transform: none; } 40% { transform: scale(1.25); filter: brightness(1.2); } }
