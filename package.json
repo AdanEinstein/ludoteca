@@ -12,13 +12,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": { "node": "^26.13.1" },
   "packageManager": "pnpm@10.30.3",
   "dependencies": {
     "htm": "3.1.1",
     "qrcode": "1.5.4"
   },
   "devDependencies": {
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.11",
     "preact": "10.29.8",
     "typescript": "7.0.2"
   },

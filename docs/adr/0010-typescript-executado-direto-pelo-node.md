@@ -4,7 +4,7 @@
 - Data: 2026-11-25
 
 ## Contexto
-O autor pediu TypeScript. O Node 24 executa arquivos `.ts` removendo os tipos na hora (*type stripping*), sem compilar. Isso
+O autor pediu TypeScript. O Node (LTS, [ADR 0013](0013-node-lts-fixado.md)) executa arquivos `.ts` removendo os tipos na hora (*type stripping*), sem compilar. Isso
 combina com o ADR 0004 (nativo primeiro) e com o ADR 0009 (sem etapa de build). O navegador não entende TypeScript.
 
 ## Decisão
@@ -17,7 +17,7 @@ combina com o ADR 0004 (nativo primeiro) e com o ADR 0009 (sem etapa de build). 
 - **Navegador:** o servidor entrega os `.ts` das telas e dos jogos **sem os tipos**, por requisição, com
   `module.stripTypeScriptTypes` do Node e cache em memória por data de modificação, como `text/javascript`.
   O strip troca tipos por espaços, então as linhas dos erros no console continuam certas e não há source map.
-- Dependências de desenvolvimento, todas com versão fixada: `typescript`, `@types/node` (24.x, igual ao Node em uso) e
+- Dependências de desenvolvimento, todas com versão fixada: `typescript`, `@types/node` (26.x, igual ao Node em uso) e
   `preact` (só para os tipos do `htm/preact`; em execução o Preact vem embutido no `htm`).
 
 ## Alternativas
@@ -26,7 +26,7 @@ combina com o ADR 0004 (nativo primeiro) e com o ADR 0009 (sem etapa de build). 
 - JavaScript com tipos em JSDoc: não foi o que o autor pediu.
 
 ## Consequências
-- `stripTypeScriptTypes` ainda é experimental no Node 24 (o Node avisa no log). Se mudar de nome ou comportamento, só `server/app.ts` muda.
+- `stripTypeScriptTypes` ainda é experimental no Node 26 (o Node avisa no log). Se mudar de nome ou comportamento, só `server/app.ts` muda.
 - Recursos de TypeScript que geram código (enums, `namespace`, decoradores) ficam proibidos.
 - O servidor passa a depender de `node:module` para as telas. Os tipos nunca chegam ao navegador.
 - A casca do app Tizen (`tizen/index.html`) continua JavaScript simples: roda na TV sem passar pelo servidor.

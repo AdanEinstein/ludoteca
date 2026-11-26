@@ -81,7 +81,7 @@ function raw(port: number, extraHeaders = ''): Promise<{
       }
     };
     socket.on('data', (chunk) => {
-      buffer = Buffer.concat([buffer, chunk]);
+      buffer = Buffer.concat([buffer, Buffer.from(chunk)]); // @types/node 26 types a socket chunk as string | Buffer
       drain();
     });
     socket.write(

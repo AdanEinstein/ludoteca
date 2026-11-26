@@ -1,6 +1,6 @@
 ## Regras do projeto
 
-- **TypeScript executado direto pelo Node 24**, sem build (ADR 0010): só sintaxe apagável (sem `enum`/`namespace`), imports com `.ts`,
+- **TypeScript executado direto pelo Node LTS (26, ADR 0013)**, sem build (ADR 0010): só sintaxe apagável (sem `enum`/`namespace`), imports com `.ts`,
   `import type` para tipos. `pnpm typecheck` roda `tsc` nos projetos de servidor e de navegador.
 - **Node nativo primeiro** (ADR 0004): `node:http`, `node:crypto`, `node:test`, WebSocket próprio em `server/ws.ts`.
   Dependência de terceiros só se for indispensável, e com ADR. Hoje: `qrcode` e `htm` (Preact embutido, ADR 0009).

@@ -4,7 +4,7 @@
 - Data: 2026-11-25
 
 ## Contexto
-O autor quer um projeto pequeno, seguro e fácil de manter, preferindo o que o Node já traz (v24) a pacotes de terceiros.
+O autor quer um projeto pequeno, seguro e fácil de manter, preferindo o que o Node já traz (LTS, ADR 0013) a pacotes de terceiros.
 Menos dependências significam menos superfície de ataque, menos atualizações e menos código que não entendemos.
 O público é infantil, então a segurança pesa mais.
 

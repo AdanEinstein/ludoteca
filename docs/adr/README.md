@@ -19,3 +19,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0010](0010-typescript-executado-direto-pelo-node.md) | TypeScript executado direto pelo Node | aceito |
 | [0011](0011-remover-astryx-e-stylex.md) | Remover Astryx e StyleX | aceito |
 | [0012](0012-plataforma-consolidada-antes-do-primeiro-jogo.md) | Plataforma consolidada antes do primeiro jogo: menu, assentos, identidade e opções | aceito |
+| [0013](0013-node-lts-fixado.md) | Node fixado na versão LTS | aceito |
