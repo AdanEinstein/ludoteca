@@ -1,0 +1,45 @@
+/* "Vamos contar!" on the TV. Identity: a background color that belongs to each number (--hue, set by the game, never red), cream
+   numerals, ten dots. Slow, one thing at a time, no flashing. Every rule starts with [data-game="count"] (ADR 0012, 0017). */
+[data-game="count"] {
+  --ink: #fff6e0;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background: #2b2d6b;
+  color: var(--ink);
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.2;
+}
+[data-game="count"] h1, [data-game="count"] p, [data-game="count"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="count"] .tv {
+  display: grid; justify-items: center; align-content: center; gap: 2rem; width: 100%; height: 100vh;
+  background: hsl(var(--hue) 45% 28%);
+  transition: background-color 700ms ease;
+}
+[data-game="count"] .title { display: flex; align-items: center; gap: 1rem; opacity: 0.85; animation: count-fade 900ms ease-out backwards; }
+[data-game="count"] .title img { width: 3.5rem; height: 3.5rem; border-radius: 0.9rem; }
+[data-game="count"] .title h1 { font-size: 1.8rem; font-weight: 600; }
+
+/* The number shrinks when it gets long, so it always fits (about 0.6em per digit). */
+[data-game="count"] .number {
+  font-size: min(34vh, calc(140vw / var(--digits)));
+  font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; color: var(--ink);
+  animation: count-in-forward 800ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+[data-game="count"] .back .number { animation-name: count-in-back; }
+
+[data-game="count"] .dots { display: flex; gap: 1.3rem; }
+[data-game="count"] .dots li { width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--ink); opacity: 0.22; transition: opacity 500ms ease; }
+[data-game="count"] .dots li.on { opacity: 1; }
+[data-game="count"] .dots li.last { animation: count-dot 800ms ease-out backwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-game="count"] .tv { transition: none; }
+  [data-game="count"] .number, [data-game="count"] .dots li.last { animation: none; }
+}
+
+@keyframes count-fade { from { opacity: 0; } to { opacity: 0.85; } }
+@keyframes count-in-forward { 0% { opacity: 0; transform: translateX(14vw) scale(0.6); } 100% { opacity: 1; transform: none; } }
+@keyframes count-in-back { 0% { opacity: 0; transform: translateX(-14vw) scale(0.6); } 100% { opacity: 1; transform: none; } }
+@keyframes count-dot { 0% { transform: scale(0.3); } 60% { transform: scale(1.35); } 100% { transform: none; } }

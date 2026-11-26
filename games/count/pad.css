@@ -1,0 +1,39 @@
+/* "Vamos contar!" on the phone. Same identity as the TV: the card takes the color of the number, big cream numeral, two huge arrows.
+   Slow transitions, no flashing and no sound. Every rule starts with [data-game="count"] (ADR 0012, 0017). */
+[data-game="count"] {
+  --ink: #fff6e0;
+  display: block;
+  min-height: 100vh;
+  padding: 3.2rem 1.25rem 1.5rem;
+  background: #2b2d6b;
+  color: var(--ink);
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.2;
+}
+[data-game="count"] h2, [data-game="count"] p { margin: 0; }
+[data-game="count"] button { font: inherit; cursor: pointer; border: 0; border-radius: 1.5rem; background: var(--ink); color: hsl(var(--hue) 45% 22%); -webkit-tap-highlight-color: transparent; transition: opacity 400ms ease, transform 200ms ease; }
+[data-game="count"] button:focus-visible { outline: 0.25rem solid #f2b84b; outline-offset: 0.2rem; }
+[data-game="count"] button:active:not(:disabled) { transform: scale(0.96); }
+[data-game="count"] button:disabled { cursor: default; opacity: 0.25; }
+[data-game="count"] .pad {
+  display: grid; align-content: space-between; gap: 1.5rem; max-width: 32rem; min-height: calc(100vh - 5rem); margin: 0 auto; padding: 1.5rem 1rem;
+  border-radius: 1.75rem; background: hsl(var(--hue) 45% 28%); transition: background-color 700ms ease;
+}
+[data-game="count"] .title { display: flex; align-items: center; justify-content: center; gap: 0.9rem; }
+[data-game="count"] .title img { width: 3rem; height: 3rem; border-radius: 0.8rem; }
+[data-game="count"] .title h2 { font-size: 1.6rem; font-weight: 600; }
+
+[data-game="count"] .answer {
+  font-size: min(10rem, calc(80vw / var(--digits))); font-weight: 700; line-height: 1; text-align: center; font-variant-numeric: tabular-nums;
+  animation: count-pop 700ms ease-out backwards;
+}
+[data-game="count"] .arrows { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+[data-game="count"] .arrows button { display: grid; place-items: center; min-height: 9rem; }
+[data-game="count"] .arrows svg { width: 4.5rem; height: 4.5rem; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-game="count"] .pad, [data-game="count"] button { transition: none; }
+  [data-game="count"] .answer { animation: none; }
+}
+
+@keyframes count-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: none; } }
