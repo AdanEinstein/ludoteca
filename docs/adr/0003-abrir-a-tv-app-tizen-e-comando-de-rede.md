@@ -29,4 +29,9 @@ Medido na própria TV (`192.168.1.4`, API em `:8001`, `:8002` com token):
 - Exige o **modo desenvolvedor** na TV e um **certificado Samsung** (conta Samsung), uma única vez. Só instala na TV do autor.
 - Exige um servidor **na rede da casa** para comandar a TV. Uma nuvem não alcança `192.168.x.x`.
 - A API é não oficial e pode quebrar numa atualização de firmware.
-- Ainda não validado: se o app, depois de instalado, navega para o servidor e se a tecla Voltar o fecha.
+- **Verificado em 2026-11-25** na TV real (Tizen 9.0, `secure_protocol` ligado): com o modo desenvolvedor e um certificado
+  Samsung (autor + distribuidor, privilégio Public, DUID da TV), o app assina, instala (`tizen install`), abre (`tizen run`) e **navega
+  para o servidor**, mostrando a tela da Ludoteca. Não foi preciso `allow-navigation` no `config.xml`.
+- O IP da TV **muda** (era `192.168.1.4`, virou `192.168.1.5` depois de reiniciar). Reservar o IP no roteador (DHCP pelo MAC) resolve; o endereço
+  da TV é configuração do servidor, não do repositório.
+- Ainda não validado: a tecla Voltar fechando o app, e o servidor abrindo o app pela API da Samsung (o `tizen run` já abre pelo `sdb`).
