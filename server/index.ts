@@ -10,13 +10,15 @@ const host = process.env.HOST ?? '0.0.0.0';
 const { TLS_CERT, TLS_KEY } = process.env;
 const httpsPort = TLS_CERT && TLS_KEY ? Number(process.env.HTTPS_PORT ?? 3443) : undefined;
 
-const app = createApp({ httpsPort });
+const dev = process.env.LUDOTECA_DEV === '1'; // pnpm dev: hot reload, and games marked `draft` show up (ADR 0019)
+const app = createApp({ httpsPort, dev, showDrafts: dev || undefined });
 const lan = Object.values(os.networkInterfaces())
   .flatMap((addresses) => addresses ?? [])
   .filter((address) => address.family === 'IPv4' && !address.internal)
   .map((address) => address.address);
 
 app.http.listen(port, host, () => {
+  if (dev) console.log('Ludoteca dev: hot reload on (CSS swaps in place, other files reload the page).');
   for (const ip of lan) console.log(`Ludoteca: http://${ip}:${port}/  (TV)  |  /pad  (phone)`);
 });
 if (httpsPort && TLS_CERT && TLS_KEY) {

@@ -13,6 +13,7 @@ import QRCode from 'qrcode';
 import { attachWebSocket } from './ws.ts';
 import { createRooms } from './rooms.ts';
 import { networkKey } from './net.ts';
+import { createDevReloader, type WatchDir } from './dev.ts';
 import { games, themes } from '../games/index.ts';
 import type { Rng } from '../games/types.ts';
 
@@ -88,6 +89,10 @@ export type AppOptions = {
   rng?: Rng;
   makeQr?: (url: string) => Promise<string>;
   showDrafts?: boolean;
+  /** Development: hot reload of pages and styles (ADR 0019). Off by default; `pnpm dev` turns it on. */
+  dev?: boolean;
+  /** Folders to watch in dev mode (tests pass their own). */
+  watchDirs?: WatchDir[];
   /** Port of the HTTPS server, when there is one. The QR code then points the phone to it, so the pad can be installed (ADR 0014). */
   httpsPort?: number;
 };
@@ -100,7 +105,14 @@ export function createApp({
   makeQr = (url) => QRCode.toString(url, { type: 'svg', margin: 2 }),
   showDrafts = Boolean(process.env.LUDOTECA_DRAFTS), // games marked `draft` only show up with LUDOTECA_DRAFTS=1 (pnpm dev)
   httpsPort,
+  dev = false,
+  watchDirs = [
+    { dir: path.join(ROOT, 'public'), prefix: '/' },
+    { dir: path.join(ROOT, 'games'), prefix: '/games/' },
+    { dir: path.join(ROOT, 'brand', 'final'), prefix: '/brand/' },
+  ],
 }: AppOptions = {}) {
+  const reloader = dev ? createDevReloader({ dirs: watchDirs }) : null;
   const rooms = createRooms({ games, themes, showDrafts, rng, makeQr });
   const trustProxy = Boolean(process.env.TRUST_PROXY);
   const networkOf = (req: http.IncomingMessage): string =>
@@ -115,6 +127,7 @@ export function createApp({
       res.writeHead(405, { Allow: 'GET, HEAD' });
       return void res.end();
     }
+    if (reloader?.handle(req, res)) return;
     const file = await resolveFile(new URL(req.url ?? '/', 'http://x').pathname);
     if (!file) {
       res.writeHead(404);
@@ -124,6 +137,7 @@ export function createApp({
     res.writeHead(200, { 'Content-Type': CONTENT_TYPES[extension] ?? 'application/octet-stream', 'Cache-Control': 'no-cache' });
     if (req.method === 'HEAD') return void res.end();
     if (extension === '.ts') return void res.end(await browserCode(file));
+    if (reloader && extension === '.html') return void res.end(reloader.inject(await readFile(file, 'utf8')));
     createReadStream(file).pipe(res);
   };
 
@@ -141,6 +155,7 @@ export function createApp({
   const baseUrl = (req: http.IncomingMessage): string =>
     httpsPort ? `https://${String(req.headers.host ?? '').replace(/:\d+$/, '')}:${httpsPort}` : `http://${req.headers.host}`;
   const wire = <S extends http.Server | https.Server>(server: S): S => {
+    server.on('close', () => reloader?.close());
     attachWebSocket(
       server,
       (conn, req) => {

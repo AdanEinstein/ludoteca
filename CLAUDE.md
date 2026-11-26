@@ -13,4 +13,4 @@
   Passo a passo em `docs/novo-jogo.md`.
 - **App da TV:** o app Tizen (`tizen/`) é só uma casca; para reinstalar ou relançar use a skill `ludoteca-tv-deploy`
   (`.claude/skills/`). Ela começa por `--dry-run` e só mexe na TV quando o usuário pede.
-- **Verificação:** `pnpm test` e `pnpm typecheck`. Servidor: `pnpm start` (`pnpm dev` mostra também os jogos em rascunho).
+- **Verificação:** `pnpm test` e `pnpm typecheck`. Servidor: `pnpm start`. Desenvolvimento: `pnpm dev` (hot reload e jogos em rascunho, ADR 0019).
