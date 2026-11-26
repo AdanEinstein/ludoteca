@@ -15,8 +15,11 @@ então precisa seguir as regras do ADR 0017 (lento, sem piscar).
   `Boyquotes/kenney-music-jingles-for-godot`). O download foi aprovado pelo autor, e os arquivos escolhidos entram no repositório.
 - Os arquivos ficam em `games/<id>/sounds/`, com **`CREDITS.md`**: fonte (URL), licença e nome de cada arquivo.
   `games/contract.test.ts` exige isso e limita a pasta a 500 KB (a TV carrega por Wi-Fi), só `.wav`, `.ogg` ou `.mp3`.
-- Poucos arquivos, curtos. Em "Quantos tem?": **uma nota** (`count.wav`), tocada uma vez por peça em alturas crescentes de uma
-  pentatônica maior (`playbackRate`), e **uma vinheta** de comemoração (`win.ogg`).
+- Poucos arquivos, curtos. Em "Quantos tem?": **uma nota grave e redonda** (`count.wav`, ~230 Hz), tocada uma vez por peça em alturas
+  crescentes de uma pentatônica maior (`playbackRate`), e **palmas** (`applause.ogg`, 4 s) ao acertar.
+- **A nota de contagem tem de ser grave e suave.** A primeira escolha (`pluck_002`, ~630 Hz e cheia de agudos) subia mais de uma oitava e meia
+  e ficou estridente e irritante. Regra: escolher a nota pelo tom (medir a frequência, ~200 a 400 Hz) e deixar a subida terminar abaixo de ~800 Hz.
+  Nove peças chegam a cerca de 700 Hz. Brilho e agudo cansam crianças sensíveis a som.
 - Tocam por **Web Audio** (`fetch` + `decodeAudioData`, pré-carregados ao abrir o jogo): sem atraso, na hora certa da animação, e sem
   precisar de `Range` no servidor. Se um arquivo não carregar ou o navegador não decodificar, os **tons gerados** entram no lugar: o jogo nunca fica mudo por acidente.
 - As regras de volume, "só na TV" e da opção "Som na TV" do ADR 0017 continuam.

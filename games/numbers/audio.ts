@@ -1,18 +1,19 @@
 // Sounds of "Quantos tem?" (ADR 0017, 0018). Two short recordings from a public library (CC0, see sounds/CREDITS.md):
-//   count.wav  one bright note, played once per piece at higher and higher pitches (a major pentatonic), so counting sounds like a tune;
-//   win.ogg    a happy jingle for the right answer.
+//   count.wav     one round, low "bong", played once per piece a little higher each time (a major pentatonic), so counting sounds like a tune;
+//   applause.ogg  people clapping, for the right answer.
+// Keep the counting note LOW and soft: a bright sample pitched up becomes shrill and irritating (it was, at first).
 // They are decoded with the Web Audio API and played at the right moment, with no delay. If a file cannot be loaded or decoded, soft
 // synthesized tones play instead, so the game is never silent by accident. There is no "wrong" sound, and "Som na TV" turns it all off.
 const FILES = {
   count: new URL('./sounds/count.wav', import.meta.url).pathname,
-  win: new URL('./sounds/win.ogg', import.meta.url).pathname,
+  applause: new URL('./sounds/applause.ogg', import.meta.url).pathname,
 } as const;
 type Name = keyof typeof FILES;
 
-// Semitones above the recording, in a major pentatonic over two octaves (any sequence sounds happy and never clashes).
+// Semitones above the recording (a low note, ~230 Hz), in a major pentatonic: 9 pieces reach about 700 Hz, never shrill.
 const STEPS = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
-const SCALE = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25, 783.99, 880.0, 1046.5]; // the same notes, for the fallback
-const VOLUME = { count: 0.7, win: 0.8, synth: 0.12 };
+const SCALE = [196.0, 220.0, 246.94, 293.66, 329.63, 392.0, 440.0, 493.88, 587.33, 659.25, 783.99]; // similar low notes, for the fallback
+const VOLUME = { count: 0.6, applause: 0.7, synth: 0.12 };
 
 let context: AudioContext | null = null;
 let unlocked = false;
@@ -89,13 +90,13 @@ export function countTones(pieces: number, step: number): void {
   });
 }
 
-/** Right answer: the pieces light up one by one (a little higher), then the happy jingle. */
+/** Right answer: the pieces light up one by one (the same soft notes), then the applause. */
 export function celebrate(pieces: number, step: number): void {
   const spacing = step * 0.7; // same pace as the CSS animation of the pieces
   void preload().then(() => {
-    for (let i = 0; i < pieces; i++) if (!sample('count', i * spacing, semitones((STEPS[i] ?? 21) + 7))) tone(SCALE[i + 1] ?? 880, i * spacing, 0.45);
+    for (let i = 0; i < pieces; i++) if (!sample('count', i * spacing, semitones(STEPS[i] ?? 21))) tone(SCALE[i + 1] ?? 880, i * spacing, 0.45);
     const end = pieces * spacing + 0.1;
-    if (!sample('win', end)) for (const frequency of [523.25, 659.25, 783.99, 1046.5]) tone(frequency, end + (frequency > 800 ? 0.15 : 0), 1.2, 0.09);
+    if (!sample('applause', end)) for (const frequency of [261.63, 329.63, 392.0, 523.25]) tone(frequency, end, 1.2, 0.08);
   });
 }
 
