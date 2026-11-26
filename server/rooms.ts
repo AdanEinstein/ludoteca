@@ -256,6 +256,17 @@ export function createRooms({
     if (!room) return deny(phone, 'room_gone');
 
     if (token && room.tokens.has(token)) {
+      // A phone that slept comes back before the server noticed the old connection died (heartbeat): the token owns that seat,
+      // so the stale connection is dropped here instead of making the phone's own return look like a full table.
+      const seat = room.tokens.get(token);
+      for (const [id, taken] of room.seats) {
+        if (taken !== seat) continue;
+        const stale = room.controllers.get(id);
+        room.seats.delete(id);
+        room.controllers.delete(id);
+        stale?.close(1000);
+        if (stale && seat !== undefined && room.game && room.state) setState(room, room.game.leave?.(room.state, seat, { rng }) ?? room.state);
+      }
       if (room.controllers.size >= capacity(room)) return deny(phone, 'full');
       admit(room, phone, token);
     } else if (room.pending.size >= maxPending) {

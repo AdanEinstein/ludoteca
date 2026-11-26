@@ -369,3 +369,25 @@ test('view: the TV and each phone can see different things', async () => {
   assert.equal(a.last('state')?.state.secret, undefined);
   assert.equal(a.last('state')?.state.game, 'duo');
 });
+
+test('a returning token replaces its stale connection instead of being denied as full', async () => {
+  const { tv, pad } = setup();
+  const t = tv();
+  const id = roomId((await roomOf(t)).url);
+  const a = joined(t, pad, id);
+  const token = a.last('ok')?.token as string;
+  start(a, 'numbers'); // players.max = 1: the table is full
+  // the phone slept: the server has not noticed yet (heartbeat), and it comes back with its token
+  const a2 = joined(t, pad, id, token);
+  assert.ok(a2.last('ok'), 'reconnected');
+  assert.equal(a2.last('denied'), undefined);
+  assert.equal(a2.last('state')?.state.game, 'numbers');
+  await tick();
+  assert.equal(t.last('players')?.count, 1, 'the stale controller was dropped, not counted twice');
+  // the old connection finally dies: it must not take the new one's seat away
+  a.emit('close');
+  await tick();
+  assert.equal(t.last('players')?.count, 1);
+  a2.say({ type: 'action', action: { type: 'again' } });
+  assert.equal(t.last('state')?.state.replay, 1, 'the new connection still plays');
+});

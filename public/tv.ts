@@ -43,6 +43,14 @@ function JoinPrompt({ onAccept, onReject }: { onAccept: () => void; onReject: ()
   </section>`;
 }
 
+/** In a game with nobody connected (phone slept or left): tells how to connect again, over the game, which stays as it was. */
+function Reconnect({ room }: { room: Room }) {
+  return html`<section class="overlay reconnect" role="status" aria-label="Sem controle conectado">
+    <p>Sem controle. Abra a Ludoteca no celular e escolha a TV <strong>${room.name}</strong>.</p>
+    ${room.qr ? html`<${Qr} svg=${room.qr} />` : null}
+  </section>`;
+}
+
 /** What the TV shows between games: the QR while nobody is connected, the list of games once someone is. */
 function Shell({ room, catalog, players, status }: { room: Room | null; catalog: Catalog | null; players: number; status: string }) {
   return html`<div class="shell">
@@ -126,6 +134,7 @@ function App() {
         ? html`<${GameRoot} id=${state.game}><${View} state=${state} /><//>`
         : null
       : html`<${Shell} room=${room} catalog=${catalog} players=${players} status=${status} />`}
+    ${state && players === 0 && room ? html`<${Reconnect} room=${room} />` : null}
     ${queue.length > 0 ? html`<${JoinPrompt} onAccept=${() => answer('accept')} onReject=${() => answer('reject')} />` : null}
   `;
 }
