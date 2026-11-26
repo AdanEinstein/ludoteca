@@ -32,3 +32,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0023](0023-jogos-com-varios-controles.md) | Jogos com vários controles (assento e mesa visíveis ao jogo) | aceito |
 | [0024](0024-letras-sorteio-em-sacola-e-catalogo-maior.md) | "Qual começa com?": sorteio em sacola, cinco palavras por letra, sons e animação de acerto | aceito |
 | [0025](0025-contar-sem-fim-e-cor-por-numero.md) | "Vamos contar!": contagem sem fim e uma cor para cada número | aceito |
+| [0026](0026-inicio-facil-com-npx.md) | Início fácil: um comando `npx`, QR no terminal e navegador aberto | aceito |

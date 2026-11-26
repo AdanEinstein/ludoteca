@@ -1,8 +1,9 @@
 {
   "name": "ludoteca",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Jogos na TV, com o celular de controle. Rode com: npx github:AdanEinstein/ludoteca",
+  "bin": { "ludoteca": "bin/ludoteca.js" },
+  "files": ["bin", "server", "games", "public", "brand/final"],
   "scripts": {
     "test": "node --test \"server/**/*.test.ts\" \"games/**/*.test.ts\" \"public/**/*.test.ts\"",
     "start": "node server/index.ts",

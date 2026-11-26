@@ -95,6 +95,8 @@ export type AppOptions = {
   watchDirs?: WatchDir[];
   /** Port of the HTTPS server, when there is one. The QR code then points the phone to it, so the pad can be installed (ADR 0014). */
   httpsPort?: number;
+  /** This machine's address on the home network. A TV page opened as `localhost` would put `localhost` in the QR link, which the phone can't reach, so it is swapped for this. */
+  lanHost?: string;
 };
 
 export type Tls = { cert: string | Buffer; key: string | Buffer };
@@ -105,6 +107,7 @@ export function createApp({
   makeQr = (url) => QRCode.toString(url, { type: 'svg', margin: 2 }),
   showDrafts = Boolean(process.env.LUDOTECA_DRAFTS), // games marked `draft` only show up with LUDOTECA_DRAFTS=1 (pnpm dev)
   httpsPort,
+  lanHost,
   dev = false,
   watchDirs = [
     { dir: path.join(ROOT, 'public'), prefix: '/' },
@@ -152,8 +155,12 @@ export function createApp({
     }
   };
   // The phone's link (QR): HTTPS when there is a secure server, so the pad can register its service worker and be installed.
-  const baseUrl = (req: http.IncomingMessage): string =>
-    httpsPort ? `https://${String(req.headers.host ?? '').replace(/:\d+$/, '')}:${httpsPort}` : `http://${req.headers.host}`;
+  const baseUrl = (req: http.IncomingMessage): string => {
+    const host = String(req.headers.host ?? '');
+    const name = host.replace(/:\d+$/, '');
+    const shown = lanHost && /^(localhost|127(\.\d+){3}|\[::1\])$/.test(name) ? lanHost : name;
+    return httpsPort ? `https://${shown}:${httpsPort}` : `http://${shown}${host.slice(name.length)}`;
+  };
   const wire = <S extends http.Server | https.Server>(server: S): S => {
     server.on('close', () => reloader?.close());
     attachWebSocket(

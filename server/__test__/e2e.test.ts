@@ -176,6 +176,22 @@ test('the pad is installable: manifest within its scope, icons served, service w
   assert.match(page, /rel="manifest" href="\/pad\.webmanifest"/);
 });
 
+test('a TV opened as localhost gets a QR link with the LAN address, so the phone can reach it', async () => {
+  const server = createAppServer({ rng: () => 2, makeQr: async () => '<svg/>', lanHost: '192.168.1.10' });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = (server.address() as net.AddressInfo).port;
+  const tv = new WebSocket(`ws://127.0.0.1:${port}/ws?tv`);
+  const room = await new Promise<{ url: string }>((resolve) => {
+    tv.onmessage = (e) => {
+      const message = JSON.parse(String(e.data)) as { type: string; url: string };
+      if (message.type === 'room') resolve(message);
+    };
+  });
+  assert.equal(room.url.replace(/\?room=.*/, ''), `http://192.168.1.10:${port}/pad`);
+  tv.close();
+  server.close();
+});
+
 test('with an HTTPS port the QR link points to it, and the HTTPS server answers with HSTS', { skip: (() => { try { execFileSync('openssl', ['version']); return false; } catch { return true; } })() }, async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ludoteca-tls-'));
   try {
