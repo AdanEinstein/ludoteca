@@ -30,3 +30,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0021](0021-reconexao-do-controle-e-aviso-na-tv.md) | Reconexão do controle retoma o assento e a TV avisa quando fica sem controle | aceito |
 | [0022](0022-hot-reload-so-com-edicao-real.md) | Hot reload só recarrega com edição real do arquivo | aceito |
 | [0023](0023-jogos-com-varios-controles.md) | Jogos com vários controles (assento e mesa visíveis ao jogo) | aceito |
+| [0024](0024-letras-sorteio-em-sacola-e-catalogo-maior.md) | "Qual começa com?": sorteio em sacola, cinco palavras por letra, sons e animação de acerto | aceito |

@@ -23,15 +23,28 @@
 
 /* Right answer slot: always takes room, so the letter does not jump when the picture arrives. */
 [data-game="letters"] .answer { display: grid; justify-items: center; gap: 0.5rem; min-height: min(12rem, 24vh); }
-[data-game="letters"] .answer .picture { width: min(8rem, 16vh); height: min(8rem, 16vh); animation: letters-rise 900ms 300ms ease-out backwards; }
+[data-game="letters"] .answer .picture { width: min(8rem, 16vh); height: min(8rem, 16vh); animation: letters-bounce 1100ms 250ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
 [data-game="letters"] .answer .word { font-size: min(3.2rem, 6vh); font-weight: 700; animation: letters-rise 900ms 500ms ease-out backwards; }
 
 /* Showing the letter again (after a wrong answer or "Ver a letra de novo"): it swells and settles, slowly. a/b alternate so the animation restarts. */
 [data-game="letters"] [data-show="a"] .letter { animation: letters-again-a 2400ms ease-in-out; }
 [data-game="letters"] [data-show="b"] .letter { animation: letters-again-b 2400ms ease-in-out; }
 
+/* Right answer: the letter hops once and settles, a soft halo spreads behind it, and confetti rains (canvas, see confetti.ts). All slow, none flashing. */
+[data-game="letters"] .solved .letter { animation: letters-cheer 1500ms ease-in-out; }
+[data-game="letters"] .halo { position: fixed; left: 50%; top: 46%; width: 36vh; height: 36vh; margin: -18vh 0 0 -18vh; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgb(255 200 87 / 0.4), transparent 68%); animation: letters-halo 2600ms ease-out forwards; }
+[data-game="letters"] .confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+@media (prefers-reduced-motion: reduce) {
+  [data-game="letters"] .solved .letter { animation: none; }
+  [data-game="letters"] .halo { display: none; }
+}
+
 @keyframes letters-fade { from { opacity: 0; } to { opacity: 0.85; } }
 @keyframes letters-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
 @keyframes letters-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes letters-again-a { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }
 @keyframes letters-again-b { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }
+@keyframes letters-bounce { 0% { opacity: 0; transform: translateY(30px) scale(0.5); } 60% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+@keyframes letters-cheer { 0%, 100% { transform: none; } 28% { transform: translateY(-3vh) scale(1.1); } 52% { transform: scale(0.96); } 72% { transform: scale(1.04); } }
+@keyframes letters-halo { 0% { opacity: 0; transform: scale(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(3); } }
