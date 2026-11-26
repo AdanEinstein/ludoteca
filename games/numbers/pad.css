@@ -1,23 +1,40 @@
-/* "Quantos tem?" on the phone: big targets, slow transitions, no flashing, no sound. Scoped by [data-game="numbers"] (ADR 0012). */
+/* "Quantos tem?" on the phone. Same identity as the TV: deep teal and cream, big targets, slow transitions, no flashing and no sound.
+   Every rule starts with [data-game="numbers"] (ADR 0012, 0017). */
 [data-game="numbers"] {
-  --ink: #1f3b57;
-  --accent: #cc7425;
-  --slow: 500ms;
+  --bg: #1f5f5b;
+  --ink: #fff6e0;
+  --sun: #f2b84b;
   display: block;
   min-height: 100vh;
-  padding: 1.25rem;
-  background: #faf6ee;
+  padding: 3.2rem 1.25rem 1.5rem;
+  background: var(--bg);
   color: var(--ink);
   font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.4;
+  line-height: 1.2;
 }
-[data-game="numbers"] h2, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
-[data-game="numbers"] button { font: inherit; cursor: pointer; border: 0; border-radius: 1.25rem; background: var(--ink); color: #faf6ee; }
-[data-game="numbers"] button:focus-visible { outline: 0.25rem solid var(--accent); outline-offset: 0.2rem; }
+[data-game="numbers"] h2, [data-game="numbers"] p, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="numbers"] button { font: inherit; cursor: pointer; border: 0; border-radius: 1.25rem; background: var(--ink); color: var(--bg); -webkit-tap-highlight-color: transparent; }
+[data-game="numbers"] button:focus-visible { outline: 0.25rem solid var(--sun); outline-offset: 0.2rem; }
 [data-game="numbers"] button:disabled { cursor: default; }
-[data-game="numbers"] .pad { display: grid; gap: 1.5rem; max-width: 32rem; margin: 3rem auto 0; }
-[data-game="numbers"] h2 { font-size: 1.6rem; text-align: center; }
-[data-game="numbers"] .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-[data-game="numbers"] .options button { width: 100%; min-height: 6.5rem; font-size: 3rem; font-weight: 700; transition: opacity var(--slow) ease; }
-[data-game="numbers"] .options button.tried { opacity: 0.2; }
-[data-game="numbers"] .next { width: 100%; min-height: 9rem; font-size: 2.2rem; font-weight: 700; background: var(--accent); color: #fff; }
+[data-game="numbers"] .pad { display: grid; gap: 1.5rem; max-width: 32rem; margin: 0 auto; }
+[data-game="numbers"] .title { display: flex; align-items: center; justify-content: center; gap: 0.9rem; }
+[data-game="numbers"] .title img { width: 3rem; height: 3rem; border-radius: 0.8rem; }
+[data-game="numbers"] .title h2 { font-size: 1.6rem; font-weight: 600; }
+[data-game="numbers"] .solved .title h2 { animation: numbers-pop 800ms ease-out backwards; }
+
+[data-game="numbers"] .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+[data-game="numbers"] .options li { animation: numbers-rise 600ms calc(var(--i) * 70ms) ease-out backwards; }
+[data-game="numbers"] .options button { display: grid; justify-items: center; align-content: center; gap: 0.5rem; width: 100%; min-height: 7.5rem; padding: 0.6rem; transition: opacity 500ms ease, transform 200ms ease; }
+[data-game="numbers"] .options button:active:not(:disabled) { transform: scale(0.96); }
+[data-game="numbers"] .options button.tried { opacity: 0.25; }
+[data-game="numbers"] .numeral { font-size: 3rem; font-weight: 700; line-height: 1; }
+/* The quantity under each numeral: little dots, three per row, so "3" and three dots are seen together. */
+[data-game="numbers"] .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; max-width: 3.2rem; min-height: 0.5rem; }
+[data-game="numbers"] .dots i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #e9846c; }
+
+[data-game="numbers"] .answer { font-size: 9rem; font-weight: 700; line-height: 1; text-align: center; animation: numbers-pop 900ms ease-out backwards; }
+[data-game="numbers"] .next { width: 100%; min-height: 8rem; font-size: 2.2rem; font-weight: 700; background: var(--sun); color: #3b2a00; animation: numbers-rise 700ms 600ms ease-out backwards; }
+[data-game="numbers"] .again { justify-self: center; padding: 0.9rem 1.6rem; font-size: 1.15rem; background: transparent; color: var(--ink); box-shadow: inset 0 0 0 0.15rem rgb(255 246 224 / 0.55); }
+
+@keyframes numbers-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes numbers-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: none; } }

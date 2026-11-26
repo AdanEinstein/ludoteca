@@ -10,6 +10,9 @@ const NOTICE_TEXT: Record<NoticeReason, string> = {
   too_many: 'Tem controles demais para este jogo.',
 };
 
+/** Every game has a `logo.svg` in its folder (checked by games/contract.test.ts). */
+export const logoOf = (game: { id: string }): string => `/games/${encodeURIComponent(game.id)}/logo.svg`;
+
 const playersText = ({ min, max }: CatalogGame['players']): string =>
   min === max ? `${min} ${min === 1 ? 'jogador' : 'jogadores'}` : `${min} a ${max} jogadores`;
 
@@ -30,6 +33,7 @@ type Props = { catalog: Catalog; notice: NoticeReason | null; onStart: (id: stri
 
 export function Menu({ catalog, notice, onStart }: Props) {
   const [picked, setPicked] = useState<CatalogGame | null>(null);
+  const [theme, setTheme] = useState('all'); // catalog filter: 'all' or a theme id
   const [config, setConfig] = useState<Record<string, OptionValue>>({});
 
   const choose = (game: CatalogGame): void => {
@@ -45,7 +49,7 @@ export function Menu({ catalog, notice, onStart }: Props) {
 
   if (picked) {
     return html`<section class="options-form">
-      <h2>${picked.name}</h2>
+      <header class="picked"><img class="cover" src=${logoOf(picked)} alt="" /><h2>${picked.name}</h2></header>
       ${(picked.options ?? []).map(
         (option) => html`<fieldset key=${option.id}>
           <legend>${option.label}</legend>
@@ -63,19 +67,27 @@ export function Menu({ catalog, notice, onStart }: Props) {
   }
 
   if (catalog.games.length === 0) return html`<p class="status">Nenhum jogo por aqui ainda.</p>`;
+  const shown = catalog.games.filter((game) => theme === 'all' || game.theme === theme);
   return html`<section class="menu">
+    <h2 class="menu-title">Escolha um jogo</h2>
     ${notice ? html`<p class="status" role="status">${NOTICE_TEXT[notice]}</p>` : null}
-    ${catalog.themes.map(
-      (theme) => html`<section key=${theme.id} class="theme">
-        <h2>${theme.name}</h2>
-        <ul>
-          ${catalog.games
-            .filter((game) => game.theme === theme.id)
-            .map((game) => html`<li key=${game.id}>
-              <button type="button" onClick=${() => choose(game)}>${game.name}<small>${playersText(game.players)}</small></button>
-            </li>`)}
-        </ul>
-      </section>`,
-    )}
+    ${catalog.themes.length > 1
+      ? html`<nav class="chips" aria-label="Temas">
+          ${[{ id: 'all', name: 'Todos' }, ...catalog.themes].map(
+            (item) => html`<button key=${item.id} type="button" aria-pressed=${theme === item.id} onClick=${() => setTheme(item.id)}>${item.name}</button>`,
+          )}
+        </nav>`
+      : null}
+    <ul class="cards">
+      ${shown.map(
+        (game) => html`<li key=${game.id}>
+          <button class="card" type="button" onClick=${() => choose(game)}>
+            <img class="cover" src=${logoOf(game)} alt="" />
+            <span class="name">${game.name}</span>
+            <small>${playersText(game.players)}</small>
+          </button>
+        </li>`,
+      )}
+    </ul>
   </section>`;
 }

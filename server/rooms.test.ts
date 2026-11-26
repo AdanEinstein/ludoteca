@@ -141,14 +141,18 @@ test('joining: wait, the TV sees the request, accepts; both land on the menu wit
 });
 
 test('draft games stay out of the catalog and cannot be started unless drafts are shown', async () => {
-  const { tv, pad } = setup({ showDrafts: false });
-  const t = tv();
-  const p = joined(t, pad, roomId((await roomOf(t)).url));
-  assert.deepEqual(p.last('catalog')?.catalog.games.map((g: { id: string }) => g.id), ['duo']);
-  assert.deepEqual(p.last('catalog')?.catalog.themes, [{ id: 'board', name: 'Tabuleiro' }]);
-  start(p, 'numbers');
-  assert.equal(t.last('state')?.state ?? null, null);
-  assert.equal(p.sent.filter((m) => m.type === 'state' && m.state).length, 0);
+  const wip: GameModule = { ...duo, meta: { ...duo.meta, id: 'wip', name: 'Em obras', theme: 'kids', players: { min: 1, max: 1 }, draft: true } };
+  const hidden = setup({ games: { numbers, wip }, showDrafts: false });
+  const t = hidden.tv();
+  const p = joined(t, hidden.pad, roomId((await roomOf(t)).url));
+  assert.deepEqual(p.last('catalog')?.catalog.games.map((g: { id: string }) => g.id), ['numbers']);
+  start(p, 'wip');
+  assert.equal(p.sent.filter((m) => m.type === 'state' && m.state).length, 0, 'a draft cannot be started');
+
+  const shown = setup({ games: { numbers, wip }, showDrafts: true });
+  const t2 = shown.tv();
+  const p2 = joined(t2, shown.pad, roomId((await roomOf(t2)).url));
+  assert.deepEqual(p2.last('catalog')?.catalog.games.map((g: { id: string }) => g.id), ['numbers', 'wip']);
 });
 
 test('a pending request cannot play; rejecting closes the connection', async () => {

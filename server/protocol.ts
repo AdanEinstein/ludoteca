@@ -23,7 +23,7 @@ export type ToTv =
 export type ToPad =
   | { type: 'tvs'; list: TvListItem[] }
   | { type: 'waiting' }
-  | { type: 'ok'; token: string }
+  | { type: 'ok'; token: string; name: string } // name: the TV's name ("Lua"), shown in the pad header
   | { type: 'catalog'; catalog: Catalog }
   | { type: 'denied'; reason: DenyReason }
   | { type: 'notice'; reason: NoticeReason }

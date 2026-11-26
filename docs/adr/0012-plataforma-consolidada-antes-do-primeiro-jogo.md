@@ -28,8 +28,7 @@ começa se a mesa couber em `players.min..max`; senão o celular recebe `notice`
   Sem `view`, todos veem tudo. Isto resolve a pendência de "estado privado por jogador" do ADR 0006.
 - **Personalização:** `meta.options` descreve escolhas (rótulo e valores em português). O celular mostra o formulário, lembra a escolha
   por jogo (`localStorage`) e o servidor troca qualquer valor fora das opções pelo padrão antes de chamar `create`.
-- **Rascunho:** `draft: true` esconde o jogo do catálogo, salvo com `LUDOTECA_DRAFTS=1` (`pnpm dev`). O `numbers` é um rascunho: serve de
-  bancada de teste do contrato até o primeiro jogo real.
+- **Rascunho:** `draft: true` esconde o jogo do catálogo, salvo com `LUDOTECA_DRAFTS=1` (`pnpm dev`). O `numbers` nasceu como rascunho, bancada de teste do contrato; deixou de ser ([ADR 0016](0016-catalogo-no-controle-e-logo-por-jogo.md)) e é o jogo demonstração.
 
 **Identidade por jogo.** A plataforma só pinta as próprias telas (pareamento, menu, avisos), dentro de `.shell` e `.overlay`.
 O jogo roda em `<div class="game-root" data-game="<id>">`, uma tela em branco (`all: initial`), com o CSS da pasta do jogo

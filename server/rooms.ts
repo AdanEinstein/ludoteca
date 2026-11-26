@@ -141,7 +141,7 @@ export function createRooms({
     room.controllers.set(phone.id, phone);
     room.seats.set(phone.id, seat);
     room.tokens.set(token, seat);
-    sendTo(phone, { type: 'ok', token });
+    sendTo(phone, { type: 'ok', token, name: room.name });
     sendTo(phone, { type: 'catalog', catalog });
     tellPlayers(room);
     const joined = room.game && room.state ? room.game.join?.(room.state, seat, { rng }) : undefined;

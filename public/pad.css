@@ -1,15 +1,33 @@
 /* Phone: one thumb, large targets, little on screen. Platform screens only; games bring their own CSS (ADR 0012). */
 html { font-size: 18px; }
+/* Installed or not, it behaves like an app: no pull-to-refresh, no text selection while tapping, room for the notch (ADR 0014). */
+body { overscroll-behavior: none; touch-action: manipulation; user-select: none; -webkit-user-select: none; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
 .shell { padding: 1.25rem; }
 .screen { display: grid; gap: 1.25rem; max-width: 32rem; margin: 0 auto; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 32rem; margin: 0 auto 1.25rem; }
+.bar .logo { height: 2.6rem; }
+.shell .install { padding: 0.6rem 1.1rem; font-size: 1rem; background: var(--amber); color: var(--white); font-weight: 700; }
+.connected { font-size: 1.05rem; padding: 0.55rem 1rem; border-radius: 999px; background: var(--white); justify-self: start; }
 .status { font-size: 1.1rem; opacity: 0.8; }
 .tvs { display: grid; gap: 1rem; }
-.tvs button, .menu li button { width: 100%; padding: 1.6rem; font-size: 1.8rem; font-weight: 700; }
-.menu { display: grid; gap: 1.5rem; }
-.theme { display: grid; gap: 0.75rem; }
-.theme h2 { font-size: 1.3rem; color: var(--amber); }
-.menu ul { display: grid; gap: 1rem; }
-.menu li button small { display: block; margin-top: 0.3rem; font-size: 1rem; font-weight: 400; opacity: 0.8; }
+.tvs button { width: 100%; padding: 1.6rem; font-size: 1.8rem; font-weight: 700; }
+.menu { display: grid; gap: 1.1rem; }
+.menu-title { font-size: 1.5rem; }
+.chips { display: flex; gap: 0.6rem; overflow-x: auto; padding-bottom: 0.2rem; scrollbar-width: none; }
+.chips button { flex: none; padding: 0.7rem 1.2rem; font-size: 1.05rem; background: var(--white); color: var(--blue); box-shadow: inset 0 0 0 0.12rem var(--mist, #e3ddcf); }
+.chips button[aria-pressed="true"] { background: var(--blue); color: var(--cream); box-shadow: none; }
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.cards li { animation: shell-rise 600ms ease-out backwards; }
+.cards li:nth-child(2) { animation-delay: 80ms; }
+.cards li:nth-child(3) { animation-delay: 160ms; }
+.shell .card { display: grid; gap: 0.5rem; width: 100%; padding: 0.7rem 0.7rem 1rem; text-align: left; background: var(--white); color: var(--blue); box-shadow: 0 0.1rem 0.6rem rgb(31 59 87 / 0.12); transition: transform 200ms ease; }
+.card:active { transform: scale(0.97); }
+.card .cover, .picked .cover { display: block; width: 100%; aspect-ratio: 1; border-radius: 0.9rem; }
+.card .name { font-size: 1.2rem; font-weight: 700; padding: 0 0.3rem; }
+.card small { font-size: 0.95rem; opacity: 0.75; padding: 0 0.3rem; }
+.picked { display: flex; align-items: center; gap: 1rem; }
+.picked .cover { width: 4.5rem; }
+@keyframes shell-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .options-form { display: grid; gap: 1.25rem; }
 .options-form h2 { font-size: 1.6rem; }
 .options-form fieldset { border: 0; padding: 0; display: grid; gap: 0.75rem; }

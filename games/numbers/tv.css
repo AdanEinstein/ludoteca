@@ -1,20 +1,50 @@
-/* "Quantos tem?" on the TV. Every rule starts with [data-game="numbers"]: the game owns its look and the platform owns none of it (ADR 0012). */
+/* "Quantos tem?" on the TV. Identity: deep teal, cream and warm pieces. Slow, one thing at a time, no flashing, no red.
+   Every rule starts with [data-game="numbers"]: the game owns its look and the platform owns none of it (ADR 0012, 0017). */
 [data-game="numbers"] {
-  --ink: #1f3b57;
-  --accent: #cc7425;
-  --slow: 500ms;
+  --bg: #1f5f5b;
+  --ink: #fff6e0;
+  --step: 420ms; /* time between pieces: keep equal to STEP_MS in tv.ts */
   display: grid;
   place-items: center;
-  min-height: 100vh;
-  background: #faf6ee;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
   color: var(--ink);
   font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.4;
+  line-height: 1.2;
 }
-[data-game="numbers"] h2, [data-game="numbers"] p, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
-[data-game="numbers"] .tv { display: grid; justify-items: center; gap: 2.5rem; }
-[data-game="numbers"] .number { font-size: 9rem; font-weight: 700; line-height: 1; color: rgb(31 59 87 / 0.25); transition: color var(--slow) ease; }
-[data-game="numbers"] .solved .number { color: var(--ink); }
-[data-game="numbers"] .pieces { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; max-width: 42rem; }
-[data-game="numbers"] .piece { width: 5.5rem; height: 5.5rem; border-radius: 50%; background: var(--ink); transition: background-color calc(var(--slow) * 1.5) ease; }
-[data-game="numbers"] .solved .piece { background: var(--accent); }
+[data-game="numbers"] h1, [data-game="numbers"] p, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="numbers"] .tv { display: grid; justify-items: center; gap: 1.5rem; }
+[data-game="numbers"] .title { display: flex; align-items: center; gap: 1rem; opacity: 0.85; animation: numbers-fade 900ms ease-out backwards; }
+[data-game="numbers"] .title img { width: 3.5rem; height: 3.5rem; border-radius: 0.9rem; }
+[data-game="numbers"] .title h1 { font-size: 1.8rem; font-weight: 600; }
+
+[data-game="numbers"] .number { font-size: 8rem; font-weight: 700; line-height: 1; color: rgb(255 246 224 / 0.3); }
+[data-game="numbers"] .number.shown { color: var(--ink); animation: numbers-pop 1000ms calc(var(--n) * var(--step) * 0.7) cubic-bezier(0.2, 0.8, 0.3, 1) backwards; }
+
+[data-game="numbers"] .pieces { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.4rem; max-width: 40rem; }
+[data-game="numbers"] .piece { width: 5.5rem; height: 5.5rem; background: var(--c); animation: numbers-in 700ms calc(var(--i) * var(--step)) ease-out backwards; }
+
+/* One shape and one color per round (the server draws the shape, never the same twice in a row). */
+[data-game="numbers"] .shape-0 { --c: #f2b84b; }
+[data-game="numbers"] .shape-0 .piece { border-radius: 50%; }
+[data-game="numbers"] .shape-1 { --c: #e9846c; }
+[data-game="numbers"] .shape-1 .piece { border-radius: 28%; }
+[data-game="numbers"] .shape-2 { --c: #6fb4d9; }
+[data-game="numbers"] .shape-2 .piece { clip-path: polygon(50% 2%, 98% 50%, 50% 98%, 2% 50%); }
+[data-game="numbers"] .shape-3 { --c: #86c48f; }
+[data-game="numbers"] .shape-3 .piece { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+
+/* Counting again (after a wrong answer or "Contar de novo"): each piece swells in turn. a/b alternate so the animation restarts. */
+[data-game="numbers"] [data-count="a"] .piece { animation: numbers-count-a 800ms calc(var(--i) * var(--step)) ease-in-out; }
+[data-game="numbers"] [data-count="b"] .piece { animation: numbers-count-b 800ms calc(var(--i) * var(--step)) ease-in-out; }
+
+/* Right answer: the pieces light up one by one, a little faster, and stay slightly larger and brighter; then the number appears. */
+[data-game="numbers"] .solved .piece { animation: numbers-lit 900ms calc(var(--i) * var(--step) * 0.7) ease-in-out both; }
+
+@keyframes numbers-fade { from { opacity: 0; } to { opacity: 0.85; } }
+@keyframes numbers-in { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: none; } }
+@keyframes numbers-count-a { 0%, 100% { transform: none; } 40% { transform: scale(1.25); filter: brightness(1.2); } }
+@keyframes numbers-count-b { 0%, 100% { transform: none; } 40% { transform: scale(1.25); filter: brightness(1.2); } }
+@keyframes numbers-lit { 0% { transform: none; filter: none; } 40% { transform: scale(1.3); filter: brightness(1.3); } 100% { transform: scale(1.08); filter: brightness(1.15); } }
+@keyframes numbers-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: none; } }

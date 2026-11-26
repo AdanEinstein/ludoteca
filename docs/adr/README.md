@@ -20,3 +20,7 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0011](0011-remover-astryx-e-stylex.md) | Remover Astryx e StyleX | aceito |
 | [0012](0012-plataforma-consolidada-antes-do-primeiro-jogo.md) | Plataforma consolidada antes do primeiro jogo: menu, assentos, identidade e opções | aceito |
 | [0013](0013-node-lts-fixado.md) | Node fixado na versão LTS | aceito |
+| [0014](0014-pwa-do-controle-e-https-opcional.md) | O controle como PWA e HTTPS opcional | aceito |
+| [0015](0015-logo-animada-lenta-e-uma-vez.md) | Logo animada: lenta, uma vez, e nunca sobre um jogo | aceito |
+| [0016](0016-catalogo-no-controle-e-logo-por-jogo.md) | Catálogo no controle e uma logo por jogo | aceito |
+| [0017](0017-design-sensorial-dos-jogos-infantis.md) | Design sensorial dos jogos infantis (som, movimento e ajuda) | aceito |

@@ -3,6 +3,7 @@
 import { html, render, useEffect, useRef, useState } from '/vendor/preact.js';
 import { connect, type Connection } from './client.ts';
 import { GameRoot, useGameView } from './game-host.ts';
+import { Logo } from './logo.ts';
 import type { Catalog, ToTv } from '../server/protocol.ts';
 import type { GameState } from '../games/types.ts';
 
@@ -45,7 +46,7 @@ function JoinPrompt({ onAccept, onReject }: { onAccept: () => void; onReject: ()
 /** What the TV shows between games: the QR while nobody is connected, the list of games once someone is. */
 function Shell({ room, catalog, players, status }: { room: Room | null; catalog: Catalog | null; players: number; status: string }) {
   return html`<div class="shell">
-    <header><img class="logo" src="/brand/ludoteca-horizontal.svg" alt="Ludoteca" /></header>
+    <header><${Logo} animate=${true} /></header>
     <section class="screen">
       ${players === 0
         ? html`<h1>Esta TV é a <strong>${room?.name ?? '…'}</strong></h1>
@@ -57,7 +58,7 @@ function Shell({ room, catalog, players, status }: { room: Room | null; catalog:
               (theme) => html`<section key=${theme.id} class="theme">
                 <h2>${theme.name}</h2>
                 <ul class="games">
-                  ${catalog.games.filter((game) => game.theme === theme.id).map((game) => html`<li key=${game.id}>${game.name}</li>`)}
+                  ${catalog.games.filter((game) => game.theme === theme.id).map((game) => html`<li key=${game.id}><img src=${`/games/${encodeURIComponent(game.id)}/logo.svg`} alt="" />${game.name}</li>`)}
                 </ul>
               </section>`,
             )}`}

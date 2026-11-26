@@ -1,0 +1,18 @@
+{
+  "id": "/pad",
+  "name": "Ludoteca, controle",
+  "short_name": "Controle",
+  "description": "Controle dos jogos da Ludoteca: a TV mostra o jogo e o celular é o controle.",
+  "lang": "pt-BR",
+  "start_url": "/pad",
+  "scope": "/pad",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1f3b57",
+  "background_color": "#faf6ee",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -73,7 +73,7 @@ for (const [id, game] of Object.entries(games)) {
     const { meta } = game;
     assert.equal(meta.id, id, 'meta.id is the folder name and the key in games/index.ts');
     assert.match(id, /^[a-z][a-z0-9-]*$/);
-    for (const name of ['logic.ts', 'tv.ts', 'pad.ts', 'logic.test.ts']) assert.ok(existsSync(file(id, name)), `${id}/${name} is missing`);
+    for (const name of ['logic.ts', 'tv.ts', 'pad.ts', 'logic.test.ts', 'logo.svg']) assert.ok(existsSync(file(id, name)), `${id}/${name} is missing`);
     for (const kind of meta.styles ?? []) assert.ok(existsSync(file(id, `${kind}.css`)), `${id}/${kind}.css is declared in meta.styles but missing`);
     assert.ok(meta.name.trim(), 'name');
     assert.ok(meta.theme in themes, `theme "${meta.theme}" is not in themes (games/index.ts)`);
@@ -109,6 +109,31 @@ for (const [id, game] of Object.entries(games)) {
       assert.deepEqual(cssProblems(id, readFileSync(file(id, `${kind}.css`), 'utf8')), []);
     });
   }
+}
+
+/** The game logo is shown in the catalog (phone and TV). It is an image: no scripts, no handlers, no external references. */
+export function logoProblems(svg: string): string[] {
+  const problems: string[] = [];
+  if (!/^\s*<svg[\s>]/.test(svg)) problems.push('must start with <svg>');
+  if (!/viewBox="0 0 (\d+) \1"/.test(svg)) problems.push('viewBox must be square and start at 0 0');
+  if (/<script|<foreignObject|<image|<use[^>]+href=["']https?:|\son\w+\s*=|(?:href|src)=["'](?!#)/i.test(svg)) problems.push('no scripts, handlers, images or external references');
+  if (!/<title>[^<]+<\/title>/.test(svg)) problems.push('needs a <title> (accessibility)');
+  return problems;
+}
+
+test('logoProblems: accepts a plain SVG and flags unsafe or sloppy ones', () => {
+  assert.deepEqual(logoProblems('<svg viewBox="0 0 256 256"><title>x</title><circle r="1"/></svg>'), []);
+  assert.equal(logoProblems('<svg viewBox="0 0 256 200"><title>x</title></svg>').length, 1);
+  assert.equal(logoProblems('<svg viewBox="0 0 256 256"><title>x</title><script>a()</script></svg>').length, 1);
+  assert.equal(logoProblems('<svg viewBox="0 0 256 256"><title>x</title><circle onclick="a()"/></svg>').length, 1);
+  assert.equal(logoProblems('<svg viewBox="0 0 256 256"><title>x</title><a href="http://x"/></svg>').length, 1);
+  assert.equal(logoProblems('<svg viewBox="0 0 256 256"><circle/></svg>').length, 1);
+});
+
+for (const id of Object.keys(games)) {
+  test(`game "${id}": logo.svg is a safe, square image`, () => {
+    assert.deepEqual(logoProblems(readFileSync(file(id, 'logo.svg'), 'utf8')), []);
+  });
 }
 
 test('every theme used by a game is named, and the platform has a place for an empty catalog', () => {

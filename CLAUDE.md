@@ -8,7 +8,7 @@
 - **Código em inglês, interface e documentação em português** (ADR 0008): identificadores, arquivos, protocolo, testes e comentários
   em inglês; textos das telas, ADRs, guias e commits em português.
 - **Um ADR por decisão** em `docs/adr/`, durante o trabalho. Decisão nova que muda uma antiga cria outro ADR.
-- **Jogo = pasta `games/<id>/`** com `logic.ts` puro, `tv.ts`, `pad.ts`, `tv.css`/`pad.css` (escopados em `[data-game="<id>"]`) e testes
+- **Jogo = pasta `games/<id>/`** com `logic.ts` puro, `tv.ts`, `pad.ts`, `logo.svg`, `tv.css`/`pad.css` (escopados em `[data-game="<id>"]`) e testes
   (ADR 0006 e 0012). Cada jogo tem identidade própria: a plataforma não impõe visual a ele. `games/contract.test.ts` confere o contrato.
   Passo a passo em `docs/novo-jogo.md`.
 - **Verificação:** `pnpm test` e `pnpm typecheck`. Servidor: `pnpm start` (`pnpm dev` mostra também os jogos em rascunho).

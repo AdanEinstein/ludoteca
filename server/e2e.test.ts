@@ -2,7 +2,12 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import net from 'node:net';
-import { createAppServer } from './app.ts';
+import https from 'node:https';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { createApp, createAppServer } from './app.ts';
 
 const server = createAppServer({ rng: () => 2, makeQr: async () => '<svg id="qr"/>', showDrafts: true });
 await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -39,7 +44,8 @@ function client(pathAndQuery: string) {
 
 test('pages and static files, with security headers', async () => {
   for (const url of ['/', '/pad', '/base.css', '/client.ts', '/tv.ts', '/vendor/preact.js', '/games/numbers/tv.ts', '/games/numbers/tv.css', '/games/numbers/pad.css', '/games/numbers/logic.ts',
-    '/brand/ludoteca-horizontal.svg', '/favicon.svg', '/site.webmanifest']) {
+    '/brand/ludoteca-horizontal.svg', '/favicon.svg', '/site.webmanifest', '/pad.webmanifest', '/sw.ts', '/logo.ts', '/pad-menu.ts', '/game-host.ts',
+    '/games/numbers/logo.svg', '/games/numbers/audio.ts']) {
     const r = await fetch(base + url);
     assert.equal(r.status, 200, url);
     await r.arrayBuffer();
@@ -146,3 +152,60 @@ test('a message above 1 KB drops the connection', async () => {
   tv.ws.send('x'.repeat(2000));
   assert.equal(await code, 1009);
 });
+
+test('the pad is installable: manifest within its scope, icons served, service worker is JavaScript', async () => {
+  const manifest = (await (await fetch(base + '/pad.webmanifest')).json()) as {
+    start_url: string; scope: string; display: string; icons: Array<{ src: string; sizes: string; purpose: string }>;
+  };
+  assert.equal(manifest.display, 'standalone');
+  assert.ok(manifest.start_url.startsWith(manifest.scope), 'start_url is inside the scope');
+  assert.ok(manifest.icons.some((i) => i.sizes === '192x192') && manifest.icons.some((i) => i.sizes === '512x512'));
+  assert.ok(manifest.icons.some((i) => i.purpose === 'maskable'));
+  for (const icon of manifest.icons) {
+    const r = await fetch(base + icon.src);
+    assert.equal(r.status, 200, icon.src);
+    assert.equal(r.headers.get('content-type'), 'image/png');
+    await r.arrayBuffer();
+  }
+  const sw = await fetch(base + '/sw.ts');
+  assert.match(sw.headers.get('content-type') ?? '', /text\/javascript/);
+  assert.doesNotMatch(await sw.text(), /\btype Event_\b/, 'types are stripped');
+  const page = await (await fetch(base + '/pad')).text();
+  assert.match(page, /rel="manifest" href="\/pad\.webmanifest"/);
+});
+
+test('with an HTTPS port the QR link points to it, and the HTTPS server answers with HSTS', { skip: (() => { try { execFileSync('openssl', ['version']); return false; } catch { return true; } })() }, async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ludoteca-tls-'));
+  try {
+    execFileSync('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=localhost', '-keyout', path.join(dir, 'k.pem'), '-out', path.join(dir, 'c.pem')], { stdio: 'ignore' });
+    const app = createApp({ rng: () => 2, makeQr: async () => '<svg/>', httpsPort: 3443 });
+    const secure = app.https({ cert: readFileSync(path.join(dir, 'c.pem')), key: readFileSync(path.join(dir, 'k.pem')) });
+    await new Promise<void>((resolve) => app.http.listen(0, '127.0.0.1', resolve));
+    await new Promise<void>((resolve) => secure.listen(0, '127.0.0.1', resolve));
+    const httpPort = (app.http.address() as net.AddressInfo).port;
+    const httpsPort = (secure.address() as net.AddressInfo).port;
+
+    const tv = new WebSocket(`ws://127.0.0.1:${httpPort}/ws?tv`);
+    const room = await new Promise<{ url: string }>((resolve) => {
+      tv.onmessage = (e) => {
+        const message = JSON.parse(String(e.data)) as { type: string; url: string };
+        if (message.type === 'room') resolve(message);
+      };
+    });
+    assert.match(room.url, /^https:\/\/127\.0\.0\.1:3443\/pad\?room=[0-9a-f]{10}$/, 'the phone is sent to HTTPS, the TV stayed on HTTP');
+    tv.close();
+
+    const headers = await new Promise<http_IncomingHeaders>((resolve, reject) => {
+      https.get({ host: '127.0.0.1', port: httpsPort, path: '/pad', rejectUnauthorized: false }, (res) => {
+        res.resume();
+        resolve(res.headers);
+      }).on('error', reject);
+    });
+    assert.match(String(headers['strict-transport-security']), /max-age=/);
+    app.http.close();
+    secure.close();
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+type http_IncomingHeaders = import('node:http').IncomingHttpHeaders;

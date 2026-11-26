@@ -57,3 +57,9 @@ Não estique nem achate · não recolora fora da paleta · não gire · não adi
 - O ícone e o favicon usam um tile azul-noite, porque o L azul sobre fundos escuros de navegador perderia contraste.
 - A prancha em `brand/presentation.html` usa dados de exemplo ("Alex Morgan", `ludoteca.com`) nos mockups. Não são reais.
 - Não gerei PDF, AI nem EPS (sem as ferramentas aqui). Os SVGs são os masters.
+
+## 7. Logo animada (telas da plataforma)
+Só no cabeçalho da TV e do controle, pelo componente `Logo` (`public/logo.ts`, ADR 0015): o L aparece, a peça âmbar assenta no canto,
+as letras entram uma a uma (cerca de 2 s, uma vez) e a peça respira bem devagar (1 → 1,05 em 7 s). Nunca sobre um jogo, nunca piscando, e desligada
+com `prefers-reduced-motion`. Os arquivos SVG da marca continuam estáticos.
+

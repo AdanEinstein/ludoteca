@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Quantos tem?">
+  <title>Quantos tem?</title>
+  <rect width="256" height="256" fill="#1F5F5B"/>
+  <circle cx="128" cy="64" r="26" fill="#F2B84B"/>
+  <circle cx="96" cy="128" r="26" fill="#FFF6E0"/>
+  <circle cx="160" cy="128" r="26" fill="#FFF6E0"/>
+  <circle cx="64" cy="192" r="26" fill="#FFF6E0"/>
+  <circle cx="128" cy="192" r="26" fill="#FFF6E0"/>
+  <circle cx="192" cy="192" r="26" fill="#FFF6E0"/>
+</svg>

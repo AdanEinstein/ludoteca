@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { create, reduce } from './logic.ts';
+import { create, reduce, SHAPES } from './logic.ts';
 import type { Rng } from '../types.ts';
 
 // deterministic rng: returns the given sequence (modulo n)
@@ -11,7 +11,7 @@ const seq = (...values: number[]): Rng => {
 
 test('create draws the target between 1 and max, with no answer or mistakes yet', () => {
   const state = create({ rng: seq(2), config: { max: 5 } });
-  assert.deepEqual(state, { game: 'numbers', round: 1, max: 5, target: 3, wrong: [], solved: false });
+  assert.deepEqual(state, { game: 'numbers', round: 1, max: 5, target: 3, shape: 2, wrong: [], solved: false, replay: 0, sound: true });
 });
 
 test('an invalid max falls back to the default', () => {
@@ -90,5 +90,38 @@ test('with max 2 the target alternates and never repeats', () => {
     const previous = state.target;
     state = reduce(reduce(state, { type: 'choose', value: state.target }, { rng }), { type: 'next' }, { rng });
     assert.notEqual(state.target, previous);
+  }
+});
+
+test('create: sound is on unless the option says off; shape is drawn from the rng', () => {
+  assert.equal(create({ rng: seq(0), config: { sound: 'off' } }).sound, false);
+  for (const sound of ['on', undefined, 1, null, 'x']) assert.equal(create({ rng: seq(0), config: { sound } }).sound, true);
+  assert.equal(create({ rng: seq(0, 3) }).shape, 3);
+});
+
+test('again counts one more time, any time, without changing the round', () => {
+  const rng = seq(2);
+  let state = create({ rng });
+  state = reduce(state, { type: 'again' }, { rng });
+  state = reduce(state, { type: 'again' }, { rng });
+  assert.equal(state.replay, 2);
+  assert.equal(state.round, 1);
+  assert.deepEqual(state.wrong, []);
+  state = reduce(reduce(state, { type: 'choose', value: state.target }, { rng }), { type: 'again' }, { rng });
+  assert.equal(state.solved, true);
+  assert.equal(state.replay, 3, 'also after solving');
+});
+
+test('next picks a new shape (never the same twice in a row) and resets the counting', () => {
+  for (const fixed of [0, 1, 2, 3]) {
+    const rng: Rng = (n) => Math.min(fixed, n - 1);
+    let state = create({ rng });
+    for (let i = 0; i < 20; i++) {
+      const previous = state.shape;
+      state = reduce(reduce(reduce(state, { type: 'again' }, { rng }), { type: 'choose', value: state.target }, { rng }), { type: 'next' }, { rng });
+      assert.notEqual(state.shape, previous);
+      assert.ok(state.shape >= 0 && state.shape < SHAPES);
+      assert.equal(state.replay, 0);
+    }
   }
 });
