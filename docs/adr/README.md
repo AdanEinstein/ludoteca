@@ -27,3 +27,5 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0018](0018-sons-de-biblioteca-publica-e-confetes-gentis.md) | Sons de biblioteca pública (CC0) e confetes gentis | aceito |
 | [0019](0019-hot-reload-em-desenvolvimento.md) | Hot reload em desenvolvimento | aceito |
 | [0020](0020-testes-em-pasta-test-ao-lado-do-alvo.md) | Testes em `__test__/`, ao lado do alvo | aceito |
+| [0021](0021-reconexao-do-controle-e-aviso-na-tv.md) | Reconexão do controle retoma o assento e a TV avisa quando fica sem controle | aceito |
+| [0022](0022-hot-reload-so-com-edicao-real.md) | Hot reload só recarrega com edição real do arquivo | aceito |
