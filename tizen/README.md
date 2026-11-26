@@ -42,7 +42,8 @@ nos comandos abaixo, `TV` é o IP atual dela.
   `<tizen:allow-navigation>*</tizen:allow-navigation>` no `config.xml` e reinstale.
 - **`sdb connect` recusado (porta 26101)**: a TV só abre a porta depois de um reinício **completo** (da tomada) com o modo desenvolvedor ligado.
   Se ainda recusar, confira se o IP da TV mudou: `sdb` e a API `:8001` só respondem no IP novo.
-- **IP do PC mudou**: reserve o IP no roteador, ou edite `SERVER` em `index.html` e reinstale.
+- **IP do PC mudou**: o PC do autor usa IP fixo `192.168.1.10` (perfil Wi-Fi do NetworkManager em modo manual, gateway `192.168.1.1`).
+  Se mudar de rede ou de máquina, fixe o IP de novo (ou reserve no roteador), ou edite `SERVER` em `index.html` e reinstale.
 - **Voltar do controle remoto não fecha o app**: o handler da tecla 10009 está na casca e em `public/tv.ts`, mas só funciona se
   o objeto `tizen` estiver disponível na página remota. Ainda não verificado.
 
