@@ -43,8 +43,8 @@
 @keyframes letters-fade { from { opacity: 0; } to { opacity: 0.85; } }
 @keyframes letters-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
 @keyframes letters-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-@keyframes letters-again-a { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }
-@keyframes letters-again-b { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }
+@keyframes letters-again-a { 0%, 100% { transform: none; } 45% { transform: scale(1.12); } }
+@keyframes letters-again-b { 0%, 100% { transform: none; } 45% { transform: scale(1.12); } }
 @keyframes letters-bounce { 0% { opacity: 0; transform: translateY(30px) scale(0.5); } 60% { opacity: 1; } 100% { opacity: 1; transform: none; } }
 @keyframes letters-cheer { 0%, 100% { transform: none; } 28% { transform: translateY(-3vh) scale(1.1); } 52% { transform: scale(0.96); } 72% { transform: scale(1.04); } }
 @keyframes letters-halo { 0% { opacity: 0; transform: scale(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(3); } }

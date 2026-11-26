@@ -3,6 +3,12 @@
 import { useEffect, useRef } from '/vendor/preact.js';
 import { at, createParticles, lastsUntil, type Particle } from './particles.ts';
 
+// Weak TVs (ADR 0017 audience plays on one): the canvas is drawn at half size and stretched by CSS, a quarter of the pixels to clear and
+// composite; its memory is given back as soon as the rain ends or is cancelled (a new canvas per round used to pile up ~8 MB each).
+const SCALE = 0.5;
+const SLOW_FRAME_MS = 50; // a frame this slow, five times, and the rain stops: the game matters more than the confetti
+const MAX_SLOW_FRAMES = 5;
+
 const rng = (n: number): number => Math.floor(Math.random() * n);
 
 // Outline points (unit radius) of the polygon shapes; the circle and the rounded square use the canvas primitives.
@@ -35,16 +41,27 @@ export function startConfetti(canvas: HTMLCanvasElement, { count, delayMs }: { c
   const ctx = canvas.getContext('2d');
   if (!ctx) return () => {};
   let frame = 0;
+  const release = (): void => {
+    canvas.width = 0; // resizing a canvas drops its pixel buffer
+    canvas.height = 0;
+  };
   const timer = setTimeout(() => {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-    const particles = createParticles(count, canvas.width, canvas.height, rng);
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    canvas.width = Math.round(width * SCALE); // setting the size also resets the transform
+    canvas.height = Math.round(height * SCALE);
+    ctx.scale(SCALE, SCALE); // from here on everything is drawn in CSS pixels, as before
+    const particles = createParticles(count, width, height, rng);
     const end = lastsUntil(particles);
     const start = performance.now();
+    let previous = 0;
+    let slow = 0;
     const tick = (now: number): void => {
+      if (previous && now - previous > SLOW_FRAME_MS) slow++;
+      previous = now;
       const t = (now - start) / 1000;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (t > end) return; // all gone: stop asking for frames
+      if (t > end || slow >= MAX_SLOW_FRAMES) return release(); // all gone (or the screen cannot keep up): stop asking for frames
+      ctx.clearRect(0, 0, width, height);
       for (const p of particles) {
         const state = at(p, t);
         if (state && state.alpha > 0) draw(ctx, p, state.x, state.y, state.angle, state.alpha);
@@ -56,7 +73,7 @@ export function startConfetti(canvas: HTMLCanvasElement, { count, delayMs }: { c
   return () => {
     clearTimeout(timer);
     cancelAnimationFrame(frame);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    release();
   };
 }
 

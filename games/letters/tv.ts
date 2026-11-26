@@ -4,7 +4,7 @@
 // The platform loads tv.css and mounts this inside <div data-game="letters"> (ADR 0012).
 import { html, useEffect, useRef } from '/vendor/preact.js';
 import { Picture } from './art.ts';
-import { celebrate, ping, preload, unlock } from './audio.ts';
+import { celebrate, ping, preload, silence, unlock } from './audio.ts';
 import { useConfetti } from './confetti.ts';
 import { WORDS } from './logic.ts';
 import type { LettersState } from './logic.ts';
@@ -27,6 +27,7 @@ export function TvView({ state }: { state: LettersState }) {
 
   useEffect(() => {
     unlock();
+    silence(); // the previous round's sounds end here
     if (state.sound) void preload();
     if (state.sound && !state.solved) ping(); // the round starts: the letter shows up
   }, [state.round]);

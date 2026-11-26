@@ -2,7 +2,7 @@
 // slowly; a right answer lights them up one by one and then shows the number. Each round has its own shape and color.
 // The platform loads tv.css and mounts this inside <div data-game="numbers"> (ADR 0012).
 import { html, useEffect, useRef } from '/vendor/preact.js';
-import { celebrate, countTones, preload, unlock } from './audio.ts';
+import { celebrate, countTones, preload, silence, unlock } from './audio.ts';
 import { useConfetti } from './confetti.ts';
 import type { NumbersState } from './logic.ts';
 
@@ -25,6 +25,7 @@ export function TvView({ state }: { state: NumbersState }) {
 
   useEffect(() => {
     unlock();
+    silence(); // the previous round's sounds end here
     if (state.sound) void preload();
     if (state.sound && !state.solved) countTones(state.target, step); // the round starts: the pieces appear counting
   }, [state.round]);

@@ -20,6 +20,23 @@ let context: AudioContext | null = null;
 let unlocked = false;
 const buffers = new Map<Name, AudioBuffer>();
 let loading: Promise<void> | null = null;
+// Sounds still playing or queued. A new round cuts them (a child who taps "Próximo" during the applause must not hear it pile up on
+// the next round), and nothing is scheduled while the context is suspended (it would all play at once on the first key press).
+const playing = new Set<AudioScheduledSourceNode>();
+const track = (node: AudioScheduledSourceNode): void => {
+  playing.add(node);
+  node.onended = () => void playing.delete(node);
+};
+
+/** Stops every sound that is playing or waiting to play. */
+export function silence(): void {
+  for (const node of playing) {
+    try {
+      node.stop();
+    } catch {} // already ended
+  }
+  playing.clear();
+}
 
 const audio = (): AudioContext | null => {
   if (context) return context;
@@ -55,20 +72,21 @@ export function preload(): Promise<void> {
 function sample(name: Name, at: number, rate = 1): boolean {
   const ctx = audio();
   const buffer = buffers.get(name);
-  if (!ctx || !buffer) return false;
+  if (!ctx || !buffer || ctx.state !== 'running') return false;
   const source = ctx.createBufferSource();
   const gain = ctx.createGain();
   source.buffer = buffer;
   source.playbackRate.value = rate;
   gain.gain.value = VOLUME[name];
   source.connect(gain).connect(ctx.destination);
+  track(source);
   source.start(ctx.currentTime + at);
   return true;
 }
 
 function tone(frequency: number, at: number, duration: number, volume = VOLUME.synth): void {
   const ctx = audio();
-  if (!ctx) return;
+  if (!ctx || ctx.state !== 'running') return;
   const start = ctx.currentTime + at;
   const oscillator = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -78,6 +96,7 @@ function tone(frequency: number, at: number, duration: number, volume = VOLUME.s
   gain.gain.exponentialRampToValueAtTime(volume, start + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
   oscillator.connect(gain).connect(ctx.destination);
+  track(oscillator);
   oscillator.start(start);
   oscillator.stop(start + duration + 0.05);
 }
