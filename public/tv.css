@@ -1,12 +1,13 @@
 /* TV: 1920 px of usable width, large text, readable from 3 meters. Platform screens only; games bring their own CSS (ADR 0012). */
-html { font-size: clamp(16px, 2.2vw, 44px); }
-.shell { display: grid; grid-template-rows: auto 1fr; gap: 1.5rem; padding: 2rem 3rem; }
-.logo { display: block; height: 4.5rem; width: auto; }
+/* The scale follows the smaller of width and height, so nothing grows past the screen (1080 px tall: about 35 px per rem). */
+html { font-size: clamp(16px, min(2.2vw, 3.3vh), 44px); }
+.shell { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1rem; height: 100vh; overflow: hidden; padding: 1.5rem 3rem; }
+.logo { display: block; height: 4rem; width: auto; }
 .screen { display: grid; place-items: center; align-content: center; text-align: center; }
 .shell h1 { font-size: 2.6rem; }
 .shell h1 strong { color: var(--amber); }
 .hint { font-size: 1.5rem; margin-top: 0.5rem; }
-.qr { width: 12rem; height: 12rem; margin: 1.5rem auto 1rem; padding: 0.5rem; background: var(--white); border-radius: var(--radius); }
+.qr { width: min(12rem, 28vh); height: min(12rem, 28vh); margin: 1rem auto; padding: 0.5rem; background: var(--white); border-radius: var(--radius); }
 .qr svg { display: block; width: 100%; height: 100%; }
 .theme { margin-top: 2rem; }
 .theme h2 { font-size: 1.6rem; color: var(--amber); }
