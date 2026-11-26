@@ -7,9 +7,7 @@ import { Logo } from './logo.ts';
 import { Menu } from './pad-menu.ts';
 import { read, write } from './storage.ts';
 import type { Catalog, DenyReason, NoticeReason, ToPad, TvListItem } from '../server/protocol.ts';
-import type { Action, GameState, OptionValue } from '../games/types.ts';
-
-type PadViewProps = { state: GameState; send: (action: Action) => void };
+import type { Action, GameState, OptionValue, PadProps } from '../games/types.ts';
 // Chrome's install prompt event (not in the DOM typings). Only fires on a secure origin (ADR 0014).
 type InstallPrompt = Event & { prompt(): Promise<void> };
 
@@ -44,6 +42,7 @@ function App() {
   const [tvName, setTvName] = useState('');
   const [install, setInstall] = useState<InstallPrompt | null>(null);
   const [state, setState] = useState<GameState | null>(null);
+  const [table, setTable] = useState<{ seat: number; seats: number[] }>({ seat: 0, seats: [] }); // this phone's seat and who is connected
   const connection = useRef<Connection | null>(null);
   const room = useRef<string | null>(initialRoom);
   const gaveUp = useRef(false);
@@ -84,6 +83,7 @@ function App() {
           if (gaveUp.current) return;
           setState(null);
           setCatalog(null);
+          setTable({ seat: 0, seats: [] });
           setTvName('');
           setStatus('Reconectando…');
         },
@@ -99,6 +99,7 @@ function App() {
             setTvName(message.name);
             setStatus('');
           } else if (message.type === 'catalog') setCatalog(message.catalog);
+          else if (message.type === 'table') setTable({ seat: message.seat, seats: message.seats });
           else if (message.type === 'notice') setNotice(message.reason);
           else if (message.type === 'state') {
             setNotice(null);
@@ -110,7 +111,7 @@ function App() {
     return () => connection.current?.stop();
   }, []);
 
-  const View = useGameView<PadViewProps>('pad', state?.game, catalog);
+  const View = useGameView<PadProps>('pad', state?.game, catalog);
 
   // PWA (ADR 0014): service worker (secure origins only), install prompt, and the screen stays on while a game runs.
   useEffect(() => {
@@ -144,7 +145,7 @@ function App() {
   const exit = (): void => connection.current?.send({ type: 'exit' });
 
   if (state) {
-    return html`${View ? html`<${GameRoot} id=${state.game}><${View} state=${state} send=${send} /><//>` : null}
+    return html`${View ? html`<${GameRoot} id=${state.game}><${View} state=${state} send=${send} seat=${table.seat} seats=${table.seats} /><//>` : null}
       <${ExitButton} onExit=${exit} />`;
   }
   return html`<div class="shell">
@@ -156,7 +157,7 @@ function App() {
       ${tvName ? html`<p class="connected" role="status">Conectado à TV <strong>${tvName}</strong></p>` : null}
       ${status ? html`<p class="status" role="status">${status}</p>` : null}
       <section class="tvs">${tvs.map((tv) => html`<button key=${tv.id} type="button" onClick=${() => pick(tv)}>${tv.name}</button>`)}</section>
-      ${catalog ? html`<${Menu} catalog=${catalog} notice=${notice} onStart=${start} />` : null}
+      ${catalog ? html`<${Menu} catalog=${catalog} notice=${notice} seated=${table.seats.length} onStart=${start} />` : null}
     </section>
   </div>`;
 }

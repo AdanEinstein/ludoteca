@@ -9,6 +9,7 @@ body { overscroll-behavior: none; touch-action: manipulation; user-select: none;
 .shell .install { padding: 0.6rem 1.1rem; font-size: 1rem; background: var(--amber); color: var(--white); font-weight: 700; }
 .connected { font-size: 1.05rem; padding: 0.55rem 1rem; border-radius: 999px; background: var(--white); justify-self: start; }
 .status { font-size: 1.1rem; opacity: 0.8; }
+.notice { font-size: 1.15rem; font-weight: 700; padding: 0.9rem 1.1rem; border-radius: 0.9rem; background: var(--amber); color: var(--white); }
 .tvs { display: grid; gap: 1rem; }
 .tvs button { width: 100%; padding: 1.6rem; font-size: 1.8rem; font-weight: 700; }
 .menu { display: grid; gap: 1.1rem; }
@@ -22,6 +23,8 @@ body { overscroll-behavior: none; touch-action: manipulation; user-select: none;
 .cards li:nth-child(3) { animation-delay: 160ms; }
 .shell .card { display: grid; gap: 0.5rem; width: 100%; padding: 0.7rem 0.7rem 1rem; text-align: left; background: var(--white); color: var(--blue); box-shadow: 0 0.1rem 0.6rem rgb(31 59 87 / 0.12); transition: transform 200ms ease; }
 .card:active { transform: scale(0.97); }
+.shell .card:disabled { opacity: 0.55; }
+.card .why { font-weight: 700; opacity: 1; }
 .card .cover, .picked .cover { display: block; width: 100%; aspect-ratio: 1; border-radius: 0.9rem; }
 .card .name { font-size: 1.2rem; font-weight: 700; padding: 0 0.3rem; }
 .card small { font-size: 0.95rem; opacity: 0.75; padding: 0 0.3rem; }

@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import net from 'node:net';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createDevReloader } from '../dev.ts';
@@ -65,6 +65,43 @@ test('a changed .css is a css message with its URL; any other file is a reload; 
     writeFileSync(path.join(dir, 'b.ts'), 'export {}');
     await tick();
     assert.deepEqual(stream.messages.slice(count), [{ kind: 'reload', path: '' }]);
+    stream.stop();
+  } finally {
+    reloader.close();
+    server.close();
+    server.closeAllConnections();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('events that do not change a file (read, attributes, sync tools touching it) send nothing: only real edits reload', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ludoteca-dev-'));
+  const file = path.join(dir, 'pad.ts');
+  writeFileSync(file, 'export {}');
+  const edited = new Date(1_700_000_000_000); // a whole-second mtime, so putting it back later is exact
+  utimesSync(file, edited, edited);
+  const reloader = createDevReloader({ dirs: [{ dir, prefix: '/x/' }], debounceMs: 30 });
+  const server = http.createServer((req, res) => {
+    if (!reloader.handle(req, res)) res.writeHead(404).end();
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${(server.address() as net.AddressInfo).port}`;
+  try {
+    const stream = await listen(base);
+    await tick(100);
+
+    // same content, same modification time: only the access time and the mode change (what a read or a scanner may do)
+    const { mode } = statSync(file);
+    utimesSync(file, new Date(), edited);
+    chmodSync(file, mode & 0o777 ^ 0o001);
+    chmodSync(file, mode & 0o777);
+    readFileSync(file);
+    await tick();
+    assert.deepEqual(stream.messages, [], 'a touch without an edit must not reload the pages (it would end the TV room)');
+
+    writeFileSync(file, 'export const x = 1;');
+    await tick();
+    assert.deepEqual(stream.messages, [{ kind: 'reload', path: '' }], 'a real edit still reloads');
     stream.stop();
   } finally {
     reloader.close();

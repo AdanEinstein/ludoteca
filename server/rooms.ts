@@ -111,7 +111,12 @@ export function createRooms({
     room.state = next;
     broadcast(room);
   };
-  const tellPlayers = (room: Room): void => sendTo(room.tv, { type: 'players', count: room.controllers.size });
+  // Everybody learns who is at the table: the TV (count + seats) and each phone (its own seat + seats), so a game can say "you are player 2".
+  const tellPlayers = (room: Room): void => {
+    const seats = [...room.seats.values()].sort((a, b) => a - b);
+    sendTo(room.tv, { type: 'players', count: room.controllers.size, seats });
+    for (const [id, controller] of room.controllers) sendTo(controller, { type: 'table', seat: room.seats.get(id) as number, seats });
+  };
   // Per-connection limit: above it the connection is closed (1008). Protects the server from bursts.
   const rateLimiter = (): (() => boolean) => {
     let windowStart = Date.now();

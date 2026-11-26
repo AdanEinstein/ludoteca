@@ -14,7 +14,7 @@ export type Catalog = { themes: Array<{ id: string; name: string }>; games: Cata
 export type ToTv =
   | { type: 'room'; url: string; qr: string; name: string }
   | { type: 'catalog'; catalog: Catalog }
-  | { type: 'players'; count: number }
+  | { type: 'players'; count: number; seats: number[] } // seats: who is connected now, sorted (a game with several pads uses it)
   | { type: 'join_request'; id: string }
   | { type: 'left'; id: string }
   | { type: 'state'; state: GameState | null };
@@ -25,6 +25,7 @@ export type ToPad =
   | { type: 'waiting' }
   | { type: 'ok'; token: string; name: string } // name: the TV's name ("Lua"), shown in the pad header
   | { type: 'catalog'; catalog: Catalog }
+  | { type: 'table'; seat: number; seats: number[] } // this phone's seat and everybody connected, sorted; sent again whenever the table changes
   | { type: 'denied'; reason: DenyReason }
   | { type: 'notice'; reason: NoticeReason }
   | { type: 'state'; state: GameState | null };

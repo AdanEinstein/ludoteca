@@ -5,9 +5,7 @@ import { connect, type Connection } from './client.ts';
 import { GameRoot, useGameView } from './game-host.ts';
 import { Logo } from './logo.ts';
 import type { Catalog, ToTv } from '../server/protocol.ts';
-import type { GameState } from '../games/types.ts';
-
-type TvViewProps = { state: GameState };
+import type { GameState, TvProps } from '../games/types.ts';
 type Room = { name: string; qr: string };
 
 /** The QR SVG comes from our server; it still enters as an image DOM node, not as HTML. */
@@ -78,7 +76,7 @@ function App() {
   const [status, setStatus] = useState('Conectando…');
   const [room, setRoom] = useState<Room | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
-  const [players, setPlayers] = useState(0);
+  const [seats, setSeats] = useState<number[]>([]); // who is connected now
   const [queue, setQueue] = useState<string[]>([]);
   const [state, setState] = useState<GameState | null>(null);
   const connection = useRef<Connection | null>(null);
@@ -90,14 +88,14 @@ function App() {
       onClose: () => {
         setStatus('Reconectando…');
         setRoom(null);
-        setPlayers(0);
+        setSeats([]);
         setQueue([]);
         setState(null);
       },
       onMessage: (message) => {
         if (message.type === 'room') setRoom({ name: message.name, qr: message.qr });
         else if (message.type === 'catalog') setCatalog(message.catalog);
-        else if (message.type === 'players') setPlayers(message.count);
+        else if (message.type === 'players') setSeats(message.seats);
         else if (message.type === 'join_request') setQueue((ids) => [...ids, message.id]);
         else if (message.type === 'left') setQueue((ids) => ids.filter((id) => id !== message.id));
         else if (message.type === 'state') setState(message.state);
@@ -119,7 +117,7 @@ function App() {
     return () => document.removeEventListener('keydown', onKey);
   }, [state]);
 
-  const View = useGameView<TvViewProps>('tv', state?.game, catalog);
+  const View = useGameView<TvProps>('tv', state?.game, catalog);
 
   const answer = (type: 'accept' | 'reject'): void => {
     const [id] = queue;
@@ -131,10 +129,10 @@ function App() {
   return html`
     ${state
       ? View
-        ? html`<${GameRoot} id=${state.game}><${View} state=${state} /><//>`
+        ? html`<${GameRoot} id=${state.game}><${View} state=${state} seats=${seats} /><//>`
         : null
-      : html`<${Shell} room=${room} catalog=${catalog} players=${players} status=${status} />`}
-    ${state && players === 0 && room ? html`<${Reconnect} room=${room} />` : null}
+      : html`<${Shell} room=${room} catalog=${catalog} players=${seats.length} status=${status} />`}
+    ${state && seats.length === 0 && room ? html`<${Reconnect} room=${room} />` : null}
     ${queue.length > 0 ? html`<${JoinPrompt} onAccept=${() => answer('accept')} onReject=${() => answer('reject')} />` : null}
   `;
 }

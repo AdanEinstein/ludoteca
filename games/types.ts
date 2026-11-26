@@ -14,6 +14,11 @@ export type Viewer = number | 'tv';
 
 export type OptionValue = number | string;
 
+/** What the platform gives a game's phone view (`PadView`). `seat` is this phone's own seat; `seats` is everybody connected, sorted. */
+export type PadProps<S extends GameState = GameState> = { state: S; send: (action: Action) => void; seat: number; seats: number[] };
+/** What the platform gives a game's TV view (`TvView`). `seats` is who is connected now (a seat can leave and come back mid-game). */
+export type TvProps<S extends GameState = GameState> = { state: S; seats: number[] };
+
 /** A setting the adult picks before the game starts ("Até quantos?"). Labels are Portuguese UI text. */
 export type GameOption = {
   id: string;

@@ -2,7 +2,7 @@
 // A changed .css file is swapped in place (the game keeps running); any other file reloads the page. When the server itself
 // restarts (`node --watch`), the page notices the broken connection and reloads when it comes back, so new server code shows up too.
 // Never loaded unless LUDOTECA_DEV=1: in production the routes below do not exist.
-import { watch, type FSWatcher } from 'node:fs';
+import { readdirSync, statSync, watch, type FSWatcher } from 'node:fs';
 import type http from 'node:http';
 import path from 'node:path';
 
@@ -31,11 +31,24 @@ source.onmessage = (event) => {
 };
 `;
 
+/** What identifies the content of a file for our purposes: modification time and size. `null`: it is not a file (gone, or a folder). */
+const signature = (file: string): string | null => {
+  try {
+    const stats = statSync(file);
+    return stats.isFile() ? `${stats.mtimeMs}:${stats.size}` : null;
+  } catch {
+    return null;
+  }
+};
+
 export function createDevReloader({ dirs, debounceMs = 80 }: { dirs: WatchDir[]; debounceMs?: number }) {
   const clients = new Set<http.ServerResponse>();
   const watchers: FSWatcher[] = [];
   const pending = new Map<string, Change['kind']>();
   let timer: NodeJS.Timeout | null = null;
+  // `fs.watch` also fires for things that are not edits: reading a file (access time), attribute changes, antivirus, cloud sync, indexers.
+  // A reload ends the TV's room (ADR 0019), so only a file whose modification time or size really changed counts.
+  const known = new Map<string, string>();
 
   const send = (change: Change): void => {
     for (const client of clients) client.write(`data: ${JSON.stringify(change)}\n\n`);
@@ -55,9 +68,21 @@ export function createDevReloader({ dirs, debounceMs = 80 }: { dirs: WatchDir[];
 
   for (const { dir, prefix } of dirs) {
     try {
+      for (const entry of readdirSync(dir, { recursive: true, withFileTypes: true })) {
+        if (!entry.isFile()) continue;
+        const file = path.join(entry.parentPath, entry.name);
+        const stamp = signature(file);
+        if (stamp) known.set(file, stamp);
+      }
       watchers.push(
         watch(dir, { recursive: true }, (_event, filename) => {
           if (!filename || IGNORED.test(filename.split(path.sep).join('/'))) return;
+          const file = path.join(dir, filename);
+          const stamp = signature(file);
+          if (stamp !== null && known.get(file) === stamp) return; // touched, not edited
+          if (stamp === null) {
+            if (!known.delete(file)) return; // a folder, or a file we never saw: nothing to reload
+          } else known.set(file, stamp);
           changed(prefix + filename.split(path.sep).join('/'));
         }),
       );
