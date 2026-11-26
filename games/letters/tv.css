@@ -1,0 +1,37 @@
+/* "Qual começa com?" on the TV. Identity: deep indigo, cream and a sunny yellow; one huge letter, rounded and calm. No flashing, no red.
+   Every rule starts with [data-game="letters"]: the game owns its look and the platform owns none of it (ADR 0012, 0017). */
+[data-game="letters"] {
+  --bg: #33307e;
+  --ink: #fff3dc;
+  --sun: #ffc857;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Verdana, "Trebuchet MS", system-ui, sans-serif;
+  line-height: 1.1;
+}
+[data-game="letters"] h1, [data-game="letters"] p { margin: 0; }
+[data-game="letters"] .tv { display: grid; justify-items: center; gap: 1rem; }
+[data-game="letters"] .title { display: flex; align-items: center; gap: 1rem; opacity: 0.85; animation: letters-fade 900ms ease-out backwards; }
+[data-game="letters"] .title img { width: 3.5rem; height: 3.5rem; border-radius: 0.9rem; }
+[data-game="letters"] .title h1 { font-size: 1.8rem; font-weight: 600; }
+
+[data-game="letters"] .letter { font-size: min(22rem, 36vh); font-weight: 700; line-height: 1; color: var(--sun); animation: letters-in 1100ms ease-out backwards; }
+
+/* Right answer slot: always takes room, so the letter does not jump when the picture arrives. */
+[data-game="letters"] .answer { display: grid; justify-items: center; gap: 0.5rem; min-height: min(12rem, 24vh); }
+[data-game="letters"] .answer .picture { width: min(8rem, 16vh); height: min(8rem, 16vh); animation: letters-rise 900ms 300ms ease-out backwards; }
+[data-game="letters"] .answer .word { font-size: min(3.2rem, 6vh); font-weight: 700; animation: letters-rise 900ms 500ms ease-out backwards; }
+
+/* Showing the letter again (after a wrong answer or "Ver a letra de novo"): it swells and settles, slowly. a/b alternate so the animation restarts. */
+[data-game="letters"] [data-show="a"] .letter { animation: letters-again-a 2400ms ease-in-out; }
+[data-game="letters"] [data-show="b"] .letter { animation: letters-again-b 2400ms ease-in-out; }
+
+@keyframes letters-fade { from { opacity: 0; } to { opacity: 0.85; } }
+@keyframes letters-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+@keyframes letters-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes letters-again-a { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }
+@keyframes letters-again-b { 0%, 100% { transform: none; filter: none; } 45% { transform: scale(1.12); filter: brightness(1.12); } }

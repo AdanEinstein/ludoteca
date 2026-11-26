@@ -1,0 +1,41 @@
+/* "Qual começa com?" on the phone. Same identity as the TV: indigo, cream and yellow, big targets, slow transitions, no flashing, no sound.
+   Every rule starts with [data-game="letters"] (ADR 0012, 0017). */
+[data-game="letters"] {
+  --bg: #33307e;
+  --ink: #fff3dc;
+  --sun: #ffc857;
+  display: block;
+  min-height: 100vh;
+  padding: 3.2rem 1.25rem 1.5rem;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Verdana, "Trebuchet MS", system-ui, sans-serif;
+  line-height: 1.15;
+}
+[data-game="letters"] h2, [data-game="letters"] p, [data-game="letters"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="letters"] button { font: inherit; cursor: pointer; border: 0; border-radius: 1.25rem; background: var(--ink); color: var(--bg); -webkit-tap-highlight-color: transparent; }
+[data-game="letters"] button:focus-visible { outline: 0.25rem solid var(--sun); outline-offset: 0.2rem; }
+[data-game="letters"] button:disabled { cursor: default; }
+[data-game="letters"] .pad { display: grid; gap: 1.5rem; max-width: 32rem; margin: 0 auto; }
+[data-game="letters"] .title { display: flex; align-items: center; justify-content: center; gap: 0.9rem; }
+[data-game="letters"] .title img { width: 3rem; height: 3rem; border-radius: 0.8rem; }
+[data-game="letters"] .title h2 { font-size: 1.5rem; font-weight: 600; }
+[data-game="letters"] .solved .title h2 { animation: letters-pop 800ms ease-out backwards; }
+
+[data-game="letters"] .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+[data-game="letters"] .options.n3 li:last-child { grid-column: 1 / -1; justify-self: center; width: calc(50% - 0.45rem); }
+[data-game="letters"] .options li { animation: letters-rise 600ms calc(var(--i) * 90ms) ease-out backwards; }
+[data-game="letters"] .options button { display: grid; justify-items: center; align-content: center; gap: 0.4rem; width: 100%; min-height: 10rem; padding: 0.7rem; transition: opacity 500ms ease, transform 200ms ease; }
+[data-game="letters"] .options button:active:not(:disabled) { transform: scale(0.96); }
+[data-game="letters"] .options button.tried { opacity: 0.25; }
+[data-game="letters"] .options .picture { width: 5.5rem; height: 5.5rem; }
+[data-game="letters"] .word { font-size: 1.5rem; font-weight: 700; }
+
+[data-game="letters"] .answer { display: grid; justify-items: center; gap: 0.6rem; animation: letters-pop 900ms ease-out backwards; }
+[data-game="letters"] .answer .picture { width: 10rem; height: 10rem; }
+[data-game="letters"] .answer .word { font-size: 2.6rem; color: var(--sun); }
+[data-game="letters"] .next { width: 100%; min-height: 8rem; font-size: 2.2rem; font-weight: 700; background: var(--sun); color: #3b2a00; animation: letters-rise 700ms 600ms ease-out backwards; }
+[data-game="letters"] .again { justify-self: center; padding: 0.9rem 1.6rem; font-size: 1.15rem; background: transparent; color: var(--ink); box-shadow: inset 0 0 0 0.15rem rgb(255 243 220 / 0.55); }
+
+@keyframes letters-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes letters-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: none; } }
