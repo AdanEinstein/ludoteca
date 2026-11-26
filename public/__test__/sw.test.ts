@@ -45,7 +45,7 @@ function boot(options: { online: boolean }) {
     },
     Response, URL,
   };
-  const code = stripTypeScriptTypes(readFileSync(new URL('../public/sw.ts', import.meta.url), 'utf8'), { mode: 'strip' });
+  const code = stripTypeScriptTypes(readFileSync(new URL('../sw.ts', import.meta.url), 'utf8'), { mode: 'strip' });
   vm.runInNewContext(code, sandbox);
   const fire = async (type: string, request?: Request) => {
     let promise: Promise<unknown> | undefined;

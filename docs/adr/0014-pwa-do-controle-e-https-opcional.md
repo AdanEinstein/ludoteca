@@ -35,6 +35,6 @@ O app Tizen da TV continua em HTTP e não precisa disso.
   fica pendente até haver certificado.
 - Verificado em Chromium real (Playwright, `localhost`): o SW ativa e controla a página, a casca fica em cache (12 arquivos) e o
   navegador dispara `beforeinstallprompt`. O navegador embutido do app **bloqueia Service Workers**, então ali só o teste unitário
-  (`server/sw.test.ts`, ambiente simulado) vale.
+  (`public/__test__/sw.test.ts`, ambiente simulado) vale.
 - Instalar o controle não muda o pareamento: o token continua no `localStorage` da origem instalada. Quem mudar de HTTP para HTTPS
   é outra origem e precisa aceitar na TV de novo uma vez.

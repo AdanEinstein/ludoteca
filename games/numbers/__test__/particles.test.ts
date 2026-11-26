@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { at, COLORS, createParticles, KINDS, lastsUntil } from './particles.ts';
-import type { Rng } from '../types.ts';
+import { at, COLORS, createParticles, KINDS, lastsUntil } from '../particles.ts';
+import type { Rng } from '../../types.ts';
 
 const rng: Rng = (n) => Math.floor(Math.random() * n);
 

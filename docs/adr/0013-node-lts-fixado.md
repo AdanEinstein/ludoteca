@@ -19,6 +19,6 @@ Em 2026-11-25 a linha LTS ativa é a **26 ("Lithium")**, versão 26.13.1 (confer
 - **Sem fixar**: foi o que gerou a diferença entre o ambiente testado e o do autor.
 
 ## Consequências
-- Testes e `tsc` passaram no Node 26.13.1 com `@types/node` 26 (um tipo de teste do socket foi ajustado em `server/ws.test.ts`).
+- Testes e `tsc` passaram no Node 26.13.1 com `@types/node` 26 (um tipo de teste do socket foi ajustado em `server/__test__/ws.test.ts`).
 - `module.stripTypeScriptTypes`, usado em `server/app.ts`, continua experimental no 26 e o Node avisa no log. Só esse arquivo depende dele.
 - Quem usa outro gerenciador de versões (nvm, fnm) precisa criar o arquivo equivalente. `engines` avisa se a versão não bate.

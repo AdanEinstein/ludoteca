@@ -2,10 +2,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { createRooms, type Conn, type RoomsOptions } from './rooms.ts';
-import { networkKey } from './net.ts';
-import * as numbers from '../games/numbers/logic.ts';
-import type { GameModule } from '../games/types.ts';
+import { createRooms, type Conn, type RoomsOptions } from '../rooms.ts';
+import { networkKey } from '../net.ts';
+import * as numbers from '../../games/numbers/logic.ts';
+import type { GameModule } from '../../games/types.ts';
 
 type Sent = { type: string; [key: string]: any };
 

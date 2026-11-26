@@ -14,7 +14,7 @@ então precisa seguir as regras do ADR 0017 (lento, sem piscar).
   Kenney (kenney.nl), "Interface Sounds" e "Music Jingles", baixados dos espelhos no GitHub (`Calinou/kenney-interface-sounds`,
   `Boyquotes/kenney-music-jingles-for-godot`). O download foi aprovado pelo autor, e os arquivos escolhidos entram no repositório.
 - Os arquivos ficam em `games/<id>/sounds/`, com **`CREDITS.md`**: fonte (URL), licença e nome de cada arquivo.
-  `games/contract.test.ts` exige isso e limita a pasta a 500 KB (a TV carrega por Wi-Fi), só `.wav`, `.ogg` ou `.mp3`.
+  `games/__test__/contract.test.ts` exige isso e limita a pasta a 500 KB (a TV carrega por Wi-Fi), só `.wav`, `.ogg` ou `.mp3`.
 - Poucos arquivos, curtos. Em "Quantos tem?": **uma nota grave e redonda** (`count.wav`, ~230 Hz), tocada uma vez por peça em alturas
   crescentes de uma pentatônica maior (`playbackRate`), e **palmas** (`applause.ogg`, 4 s) ao acertar.
 - **A nota de contagem tem de ser grave e suave.** A primeira escolha (`pluck_002`, ~630 Hz e cheia de agudos) subia mais de uma oitava e meia

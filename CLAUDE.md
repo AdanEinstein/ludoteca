@@ -9,8 +9,9 @@
   em inglês; textos das telas, ADRs, guias e commits em português.
 - **Um ADR por decisão** em `docs/adr/`, durante o trabalho. Decisão nova que muda uma antiga cria outro ADR.
 - **Jogo = pasta `games/<id>/`** com `logic.ts` puro, `tv.ts`, `pad.ts`, `logo.svg`, `tv.css`/`pad.css` (escopados em `[data-game="<id>"]`) e testes
-  (ADR 0006 e 0012). Cada jogo tem identidade própria: a plataforma não impõe visual a ele. `games/contract.test.ts` confere o contrato.
+  (ADR 0006 e 0012). Cada jogo tem identidade própria: a plataforma não impõe visual a ele. `games/__test__/contract.test.ts` confere o contrato.
   Passo a passo em `docs/novo-jogo.md`.
 - **App da TV:** o app Tizen (`tizen/`) é só uma casca; para reinstalar ou relançar use a skill `ludoteca-tv-deploy`
   (`.claude/skills/`). Ela começa por `--dry-run` e só mexe na TV quando o usuário pede.
+- **Testes em `__test__/`**, ao lado do alvo (`server/__test__/rooms.test.ts` testa `server/rooms.ts`), ADR 0020.
 - **Verificação:** `pnpm test` e `pnpm typecheck`. Servidor: `pnpm start`. Desenvolvimento: `pnpm dev` (hot reload e jogos em rascunho, ADR 0019).

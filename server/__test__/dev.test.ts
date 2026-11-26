@@ -6,8 +6,8 @@ import net from 'node:net';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createDevReloader } from './dev.ts';
-import { createAppServer } from './app.ts';
+import { createDevReloader } from '../dev.ts';
+import { createAppServer } from '../app.ts';
 
 const tick = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
 

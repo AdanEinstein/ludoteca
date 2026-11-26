@@ -19,7 +19,7 @@ Um jogo é uma pasta `games/<id>/`, com `<id>` em inglês, contendo:
   - `rng(n)` é injetado (inteiro em `[0, n)`), para os testes serem determinísticos. Sem laços que dependam do `rng` terminar.
 - `tv.ts` (navegador da TV): exporta o componente Preact `TvView({ state })`.
 - `pad.ts` (celular): exporta o componente Preact `PadView({ state, send })`, onde `send(action)` envia `{ type, value? }`.
-- `logic.test.ts`: testes com `node:test`.
+- `__test__/logic.test.ts`: testes com `node:test` (pasta `__test__/` ao lado do alvo, [ADR 0020](0020-testes-em-pasta-test-ao-lado-do-alvo.md)).
 
 A plataforma só admite ações cujo `type` está em `meta.actions` do jogo; o jogo valida o conteúdo.
 Jogo novo = nova pasta + uma linha em `games/index.ts`.

@@ -58,7 +58,7 @@ async function resolveFile(urlPath: string): Promise<string | null> {
   } catch {
     return null;
   }
-  if (decoded.includes('\0') || /\.test\.|(^|\/)\./.test(decoded)) return null; // tests and hidden files
+  if (decoded.includes('\0') || /\.test\.|(^|\/)(\.|__test__\/)/.test(decoded)) return null; // tests (and their folders) and hidden files
   if (!CONTENT_TYPES[path.extname(decoded)]) return null;
   for (const [prefix, folder] of MOUNTS) {
     if (!decoded.startsWith(prefix)) continue;

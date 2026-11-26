@@ -29,5 +29,5 @@ Cada ajuste de tela, jogo ou CSS pedia reiniciar o servidor e recarregar TV e ce
 - Reiniciar o servidor derruba as salas: a TV reconecta e cria uma nova, e o celular volta à lista de TVs (o token da sala some).
   É o custo de mexer em código do servidor; ajustes de telas, CSS e jogos (no navegador) não passam por isso, só os de `logic.ts` e `server/`.
 - Se a TV real abrir a Ludoteca de um servidor em modo dev, ela também recarrega a cada edição. Para testar na TV sem isso, use `pnpm start`.
-- O reload é testado (`server/dev.test.ts`: observador real numa pasta temporária, HTTP real e a ligação no app) e foi conferido no navegador
+- O reload é testado (`server/__test__/dev.test.ts`: observador real numa pasta temporária, HTTP real e a ligação no app) e foi conferido no navegador
   nos três casos (CSS no lugar, arquivo `.ts` recarrega, reinício do servidor recarrega).

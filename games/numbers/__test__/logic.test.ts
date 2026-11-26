@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { create, reduce, SHAPES } from './logic.ts';
-import type { Rng } from '../types.ts';
+import { create, reduce, SHAPES } from '../logic.ts';
+import type { Rng } from '../../types.ts';
 
 // deterministic rng: returns the given sequence (modulo n)
 const seq = (...values: number[]): Rng => {

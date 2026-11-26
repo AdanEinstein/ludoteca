@@ -11,7 +11,7 @@ export type WatchDir = { dir: string; prefix: string };
 export type Change = { kind: 'css' | 'reload'; path: string };
 
 // Hidden files, folders starting with `_` (scratch space), tests and docs never reload the page.
-const IGNORED = /(^|\/)[._]|\.test\.|\.md$/;
+const IGNORED = /(^|\/)[._]|\.test\.|\.md$/; // `_` also covers __test__ folders
 
 const CLIENT = `// Ludoteca dev client (hot reload). Served only when the server runs in dev mode.
 const source = new EventSource('/__dev/events');

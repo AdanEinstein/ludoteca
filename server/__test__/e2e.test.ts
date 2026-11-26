@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createApp, createAppServer } from './app.ts';
+import { createApp, createAppServer } from '../app.ts';
 
 const server = createAppServer({ rng: () => 2, makeQr: async () => '<svg id="qr"/>', showDrafts: true });
 await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -69,7 +69,7 @@ test('.ts is served as JavaScript with the types removed', async () => {
 });
 
 test('does not serve tests, hidden files, outside the public folders, nor path traversal', async () => {
-  for (const url of ['/games/numbers/logic.test.ts', '/server/app.ts', '/package.json', '/.git/config', '/%2e%2e/package.json',
+  for (const url of ['/games/numbers/__test__/logic.test.ts', '/games/__test__/contract.test.ts', '/__test__/sw.test.ts', '/server/__test__/rooms.test.ts', '/server/app.ts', '/package.json', '/.git/config', '/%2e%2e/package.json',
     '/..%2fpackage.json', '/games/%2e%2e/server/app.ts', '/games/numbers/', '/missing.js', '/vendor/other.js', '/node_modules/htm/package.json']) {
     const r = await fetch(base + url);
     assert.equal(r.status, 404, url);

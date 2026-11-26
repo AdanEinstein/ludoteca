@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test \"server/**/*.test.ts\" \"games/**/*.test.ts\"",
+    "test": "node --test \"server/**/*.test.ts\" \"games/**/*.test.ts\" \"public/**/*.test.ts\"",
     "start": "node server/index.ts",
     "dev": "LUDOTECA_DEV=1 node --watch --watch-preserve-output server/index.ts",
     "typecheck": "tsc -p tsconfig.server.json && tsc -p tsconfig.browser.json"

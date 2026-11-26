@@ -3,10 +3,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { games, themes } from './index.ts';
-import type { GameModule, GameState } from './types.ts';
+import { games, themes } from '../index.ts';
+import type { GameModule, GameState } from '../types.ts';
 
-const here = new URL('.', import.meta.url);
+const here = new URL('..', import.meta.url);
 const file = (id: string, name: string): URL => new URL(`${id}/${name}`, here);
 const seq = (n: number): number => n - 1; // fixed rng: always the last value
 
@@ -73,7 +73,7 @@ for (const [id, game] of Object.entries(games)) {
     const { meta } = game;
     assert.equal(meta.id, id, 'meta.id is the folder name and the key in games/index.ts');
     assert.match(id, /^[a-z][a-z0-9-]*$/);
-    for (const name of ['logic.ts', 'tv.ts', 'pad.ts', 'logic.test.ts', 'logo.svg']) assert.ok(existsSync(file(id, name)), `${id}/${name} is missing`);
+    for (const name of ['logic.ts', 'tv.ts', 'pad.ts', '__test__/logic.test.ts', 'logo.svg']) assert.ok(existsSync(file(id, name)), `${id}/${name} is missing`);
     for (const kind of meta.styles ?? []) assert.ok(existsSync(file(id, `${kind}.css`)), `${id}/${kind}.css is declared in meta.styles but missing`);
     assert.ok(meta.name.trim(), 'name');
     assert.ok(meta.theme in themes, `theme "${meta.theme}" is not in themes (games/index.ts)`);

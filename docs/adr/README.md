@@ -26,3 +26,4 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0017](0017-design-sensorial-dos-jogos-infantis.md) | Design sensorial dos jogos infantis (som, movimento e ajuda) | aceito |
 | [0018](0018-sons-de-biblioteca-publica-e-confetes-gentis.md) | Sons de biblioteca pública (CC0) e confetes gentis | aceito |
 | [0019](0019-hot-reload-em-desenvolvimento.md) | Hot reload em desenvolvimento | aceito |
+| [0020](0020-testes-em-pasta-test-ao-lado-do-alvo.md) | Testes em `__test__/`, ao lado do alvo | aceito |

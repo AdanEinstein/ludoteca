@@ -13,7 +13,7 @@ de botões de texto, e um catálogo com várias identidades pede que cada jogo s
   **cartões** de dois por linha: logo, nome e quantidade de jogadores. Jogo com opções abre o formulário antes (com a logo do jogo).
 - A TV mostra a mesma lista, com as logos, e diz para escolher no celular.
 - **Todo jogo tem `games/<id>/logo.svg`**: quadrado (`viewBox="0 0 N N"`), com `<title>`, sem scripts, manipuladores, imagens nem
-  referências externas. `games/contract.test.ts` confere. A interface arredonda os cantos; o arquivo é de sangria total.
+  referências externas. `games/__test__/contract.test.ts` confere. A interface arredonda os cantos; o arquivo é de sangria total.
 - Cada jogo escolhe sua paleta. A logo de um jogo **não** usa a paleta da Ludoteca (ADR 0012).
 - Como criar a logo de um jogo (fluxo da skill `logo-design`, versão rápida): 3 conceitos em SVG preto e cores, teste em 64, 32 e 16 px
   (`concept_sheet.py`), escolha pelo que continua legível pequeno, e `svg_audit.py` limpo. A de "Quantos tem?" foi escolhida assim:

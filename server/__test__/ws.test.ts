@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import net from 'node:net';
 import { randomBytes } from 'node:crypto';
-import { attachWebSocket, type AttachOptions } from './ws.ts';
+import { attachWebSocket, type AttachOptions } from '../ws.ts';
 
 async function start(options: AttachOptions = {}) {
   const server = http.createServer((_req, res) => res.end('http'));

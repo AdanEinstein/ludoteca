@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": { "lib": ["ES2023"], "types": ["node"] },
-  "include": ["server", "games/index.ts", "games/*/logic.ts", "games/*/logic.test.ts", "games/*/particles.ts", "games/*/particles.test.ts", "games/contract.test.ts"]
+  "include": ["server", "games/index.ts", "games/*/logic.ts", "games/*/particles.ts", "games/*/__test__/*.test.ts", "games/__test__/*.test.ts", "public/__test__/*.test.ts"]
 }

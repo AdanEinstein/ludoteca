@@ -34,7 +34,7 @@ começa se a mesa couber em `players.min..max`; senão o celular recebe `notice`
 O jogo roda em `<div class="game-root" data-game="<id>">`, uma tela em branco (`all: initial`), com o CSS da pasta do jogo
 (`tv.css`/`pad.css`, declarados em `meta.styles`) carregado só enquanto ele roda e removido ao sair.
 - Todo seletor do CSS do jogo começa com `[data-game="<id>"]`; `@keyframes` e `font-family` levam o prefixo `<id>-`; `@import` é proibido.
-  O teste de conformidade (`games/contract.test.ts`) confere isso e o resto do contrato para **todo** jogo registrado.
+  O teste de conformidade (`games/__test__/contract.test.ts`) confere isso e o resto do contrato para **todo** jogo registrado.
 - O jogo pode ter na pasta fontes, imagens, sons e JSON (`.woff2`, `.png`, `.webp`, `.mp3`, `.ogg`, `.json`...), todos servidos de `'self'`.
   Sem cabeçalhos `Range`: o áudio toca, mas não avança/retrocede.
 - A única interface da plataforma sobre o jogo, no celular, é o botão "Menu", que pede dois toques em 3 segundos para sair

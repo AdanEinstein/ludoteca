@@ -28,4 +28,4 @@ nem dado pessoal, o que reduz muito o risco, mas ainda há superfície: arquivos
 
 ## Consequências
 - Quem está na LAN e chega à porta pode abrir `/pad` e pedir entrada, mas só joga se a TV aceitar.
-- Os testes de caminho e de protocolo vivem em `server/e2e.test.ts` e `server/ws.test.ts`.
+- Os testes de caminho e de protocolo vivem em `server/__test__/e2e.test.ts` e `server/__test__/ws.test.ts`.
