@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import net from 'node:net';
 import { createAppServer } from './app.ts';
 
-const server = createAppServer({ rng: () => 2, makeQr: async () => '<svg id="qr"/>' });
+const server = createAppServer({ rng: () => 2, makeQr: async () => '<svg id="qr"/>', showDrafts: true });
 await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
 const { port } = server.address() as net.AddressInfo;
 const base = `http://127.0.0.1:${port}`;
@@ -38,7 +38,7 @@ function client(pathAndQuery: string) {
 }
 
 test('pages and static files, with security headers', async () => {
-  for (const url of ['/', '/pad', '/base.css', '/client.ts', '/tv.ts', '/vendor/preact.js', '/games/numbers/tv.ts', '/games/numbers/logic.ts',
+  for (const url of ['/', '/pad', '/base.css', '/client.ts', '/tv.ts', '/vendor/preact.js', '/games/numbers/tv.ts', '/games/numbers/tv.css', '/games/numbers/pad.css', '/games/numbers/logic.ts',
     '/brand/ludoteca-horizontal.svg', '/favicon.svg', '/site.webmanifest']) {
     const r = await fetch(base + url);
     assert.equal(r.status, 200, url);
@@ -92,6 +92,7 @@ test('full flow: TV, phone, accept, game, reconnect', async () => {
   const room = await tv.next();
   assert.equal(room.type, 'room');
   assert.equal(room.qr, '<svg id="qr"/>');
+  assert.equal((await tv.next()).type, 'catalog');
   assert.match(room.url, new RegExp(`^http://127\\.0\\.0\\.1:${port}/pad\\?room=`));
 
   // the phone opens the list, sees the TV and joins
@@ -110,6 +111,11 @@ test('full flow: TV, phone, accept, game, reconnect', async () => {
   tv.say({ type: 'accept', id: request.id });
   const ok = await pad.next();
   assert.equal(ok.type, 'ok');
+  assert.equal((await pad.next()).type, 'catalog');
+  assert.equal((await pad.next()).state, null, 'the menu');
+  assert.equal((await tv.next()).count, 1);
+
+  pad.say({ type: 'start', game: 'numbers', config: { max: 5 } });
   assert.equal((await pad.next()).state.target, 3);
   assert.equal((await tv.next()).state.target, 3);
 
@@ -119,10 +125,12 @@ test('full flow: TV, phone, accept, game, reconnect', async () => {
 
   // reconnect with a token: joins without a new request
   pad.ws.close();
+  assert.equal((await tv.next()).type, 'players');
   assert.equal((await tv.next()).type, 'left');
   const pad2 = client(`/ws?room=${id}&token=${ok.token}`);
   await pad2.opened;
   assert.equal((await pad2.next()).type, 'ok');
+  assert.equal((await pad2.next()).type, 'catalog');
   assert.equal((await pad2.next()).state.solved, true);
 
   tv.ws.close();

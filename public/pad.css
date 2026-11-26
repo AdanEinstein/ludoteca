@@ -1,7 +1,23 @@
-/* Phone: one thumb, large targets, little on screen. */
+/* Phone: one thumb, large targets, little on screen. Platform screens only; games bring their own CSS (ADR 0012). */
 html { font-size: 18px; }
-body { padding: 1.25rem; }
-main { display: grid; gap: 1.25rem; max-width: 32rem; margin: 0 auto; }
+.shell { padding: 1.25rem; }
+.screen { display: grid; gap: 1.25rem; max-width: 32rem; margin: 0 auto; }
 .status { font-size: 1.1rem; opacity: 0.8; }
 .tvs { display: grid; gap: 1rem; }
-.tvs button { padding: 1.6rem; font-size: 1.8rem; font-weight: 700; }
+.tvs button, .menu li button { width: 100%; padding: 1.6rem; font-size: 1.8rem; font-weight: 700; }
+.menu { display: grid; gap: 1.5rem; }
+.theme { display: grid; gap: 0.75rem; }
+.theme h2 { font-size: 1.3rem; color: var(--amber); }
+.menu ul { display: grid; gap: 1rem; }
+.menu li button small { display: block; margin-top: 0.3rem; font-size: 1rem; font-weight: 400; opacity: 0.8; }
+.options-form { display: grid; gap: 1.25rem; }
+.options-form h2 { font-size: 1.6rem; }
+.options-form fieldset { border: 0; padding: 0; display: grid; gap: 0.75rem; }
+.options-form legend { padding: 0; margin-bottom: 0.75rem; font-size: 1.2rem; }
+.choices { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.choices button { flex: 1; padding: 1.2rem 1rem; font-size: 1.4rem; background: var(--white); color: var(--blue); box-shadow: inset 0 0 0 0.15rem var(--blue); }
+.choices button[aria-pressed="true"] { background: var(--blue); color: var(--cream); }
+.options-form > button { padding: 1.4rem; font-size: 1.5rem; }
+.options-form > button.primary { background: var(--amber); color: var(--white); font-weight: 700; }
+.exit-bar { position: fixed; top: 0.6rem; right: 0.6rem; z-index: 10; }
+.exit-bar button { padding: 0.5rem 1rem; font-size: 1rem; opacity: 0.55; }

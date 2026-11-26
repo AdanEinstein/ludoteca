@@ -1,11 +1,14 @@
-// Phone screen: finds the TV (list or QR), waits for the accept and shows the game controls (ADR 0002).
+// Phone screen: finds the TV (list or QR), waits for the accept, shows the menu and then the game controls (ADR 0002, 0012).
 // Remembers the last TV to return on its own after a reload or sleep; if the room is gone, goes back to the list.
 import { html, render, useEffect, useRef, useState } from '/vendor/preact.js';
 import { connect, type Connection } from './client.ts';
-import type { DenyReason, ToPad, TvListItem } from '../server/protocol.ts';
-import type { Action, GameState } from '../games/types.ts';
+import { GameRoot, useGameView } from './game-host.ts';
+import { Menu } from './pad-menu.ts';
+import { read, write } from './storage.ts';
+import type { Catalog, DenyReason, NoticeReason, ToPad, TvListItem } from '../server/protocol.ts';
+import type { Action, GameState, OptionValue } from '../games/types.ts';
 
-type GameView = (props: { state: GameState; send: (action: Action) => void }) => unknown;
+type PadViewProps = { state: GameState; send: (action: Action) => void };
 
 // UI text, Portuguese (ADR 0008)
 const DENIED_TEXT: Record<Exclude<DenyReason, 'room_gone'>, string> = {
@@ -13,31 +16,29 @@ const DENIED_TEXT: Record<Exclude<DenyReason, 'room_gone'>, string> = {
   full: 'Esta TV já tem controles demais.',
 };
 
-const read = (key: string): string => {
-  try {
-    return localStorage.getItem(key) ?? '';
-  } catch {
-    return '';
-  }
-};
-const write = (key: string, value: string): void => {
-  try {
-    if (value) localStorage.setItem(key, value);
-    else localStorage.removeItem(key);
-  } catch {
-    /* no storage: the TV asks to accept again */
-  }
-};
-
 const LAST_ROOM = 'ludoteca:last-room';
 // The QR code takes priority over the remembered room
 const initialRoom = new URLSearchParams(location.search).get('room') || read(LAST_ROOM) || null;
 
+/** Leaving a game takes two presses (a child tapping at random does not end it): the first one arms the button for 3 seconds. */
+function ExitButton({ onExit }: { onExit: () => void }) {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const timer = setTimeout(() => setArmed(false), 3000);
+    return () => clearTimeout(timer);
+  }, [armed]);
+  return html`<div class="overlay exit-bar">
+    <button type="button" onClick=${() => (armed ? onExit() : setArmed(true))}>${armed ? 'Sair do jogo?' : 'Menu'}</button>
+  </div>`;
+}
+
 function App() {
   const [status, setStatus] = useState('Procurando TVs…');
   const [tvs, setTvs] = useState<TvListItem[]>([]);
+  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [notice, setNotice] = useState<NoticeReason | null>(null);
   const [state, setState] = useState<GameState | null>(null);
-  const [View, setView] = useState<GameView | null>(null);
   const connection = useRef<Connection | null>(null);
   const room = useRef<string | null>(initialRoom);
   const gaveUp = useRef(false);
@@ -55,6 +56,7 @@ function App() {
       write(`ludoteca:${room.current}`, '');
       write(LAST_ROOM, '');
       setState(null);
+      setCatalog(null);
       if (reason === 'room_gone') {
         // the room ended (TV restarted): look for the TVs again instead of giving up
         room.current = null;
@@ -76,6 +78,7 @@ function App() {
         onClose: () => {
           if (gaveUp.current) return;
           setState(null);
+          setCatalog(null);
           setStatus('Reconectando…');
         },
         onMessage: (message) => {
@@ -88,36 +91,35 @@ function App() {
             write(`ludoteca:${room.current}`, message.token);
             write(LAST_ROOM, room.current ?? '');
             setStatus('');
-          } else if (message.type === 'state') setState(message.state);
-          else if (message.type === 'denied') denied(message.reason);
+          } else if (message.type === 'catalog') setCatalog(message.catalog);
+          else if (message.type === 'notice') setNotice(message.reason);
+          else if (message.type === 'state') {
+            setNotice(null);
+            setState(message.state);
+          } else if (message.type === 'denied') denied(message.reason);
         },
       },
     );
     return () => connection.current?.stop();
   }, []);
 
-  const gameId = state?.game;
-  useEffect(() => {
-    if (!gameId) return setView(null);
-    let current = true;
-    import(`/games/${encodeURIComponent(gameId)}/pad.ts`).then(
-      (module: { PadView: GameView }) => current && setView(() => module.PadView),
-      () => {},
-    );
-    return () => {
-      current = false;
-    };
-  }, [gameId]);
+  const View = useGameView<PadViewProps>('pad', state?.game, catalog);
 
   const send = (action: Action): void => connection.current?.send({ type: 'action', action });
+  const start = (game: string, config: Record<string, OptionValue>): void => connection.current?.send({ type: 'start', game, config });
+  const exit = (): void => connection.current?.send({ type: 'exit' });
 
-  return html`
-    ${status ? html`<p class="status" role="status">${status}</p>` : null}
-    ${state && View ? html`<${View} state=${state} send=${send} />` : null}
-    ${!state
-      ? html`<section class="tvs">${tvs.map((tv) => html`<button key=${tv.id} type="button" onClick=${() => pick(tv)}>${tv.name}</button>`)}</section>`
-      : null}
-  `;
+  if (state) {
+    return html`${View ? html`<${GameRoot} id=${state.game}><${View} state=${state} send=${send} /><//>` : null}
+      <${ExitButton} onExit=${exit} />`;
+  }
+  return html`<div class="shell">
+    <section class="screen">
+      ${status ? html`<p class="status" role="status">${status}</p>` : null}
+      <section class="tvs">${tvs.map((tv) => html`<button key=${tv.id} type="button" onClick=${() => pick(tv)}>${tv.name}</button>`)}</section>
+      ${catalog ? html`<${Menu} catalog=${catalog} notice=${notice} onStart=${start} />` : null}
+    </section>
+  </div>`;
 }
 
 render(html`<${App} />`, document.querySelector('main') as HTMLElement);

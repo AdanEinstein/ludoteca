@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test \"server/**/*.test.ts\" \"games/**/*.test.ts\"",
     "start": "node server/index.ts",
+    "dev": "LUDOTECA_DRAFTS=1 node server/index.ts",
     "typecheck": "tsc -p tsconfig.server.json && tsc -p tsconfig.browser.json"
   },
   "keywords": [],

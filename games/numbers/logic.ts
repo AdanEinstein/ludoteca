@@ -2,7 +2,23 @@
 // Audience principles (ADR 0009): no clock, no score, no error screen. A wrong answer only dims that option.
 import type { Action, GameMeta, Rng } from '../types.ts';
 
-export const meta: GameMeta = { id: 'numbers', name: 'Quantos tem?', theme: 'kids', players: { min: 1, max: 1 } };
+export const meta: GameMeta = {
+  id: 'numbers',
+  name: 'Quantos tem?',
+  theme: 'kids',
+  players: { min: 1, max: 1 },
+  actions: ['choose', 'next'],
+  options: [
+    {
+      id: 'max',
+      label: 'Até quantos?',
+      choices: [{ value: 3, label: 'Até 3' }, { value: 5, label: 'Até 5' }, { value: 9, label: 'Até 9' }],
+      default: 5,
+    },
+  ],
+  styles: ['tv', 'pad'],
+  draft: true, // test bench for the platform contract (ADR 0012); the first real game replaces it
+};
 
 export type NumbersState = {
   game: 'numbers';
@@ -23,7 +39,8 @@ const pickTarget = (max: number, previous: number, rng: Rng): number => {
 };
 
 /** `rng(n)` returns an integer in [0, n). Injected, so the game is deterministic in tests. */
-export function create({ rng, max = DEFAULT_MAX }: { rng: Rng; max?: unknown }): NumbersState {
+export function create({ rng, config = {} }: { rng: Rng; config?: { max?: unknown } }): NumbersState {
+  const { max = DEFAULT_MAX } = config;
   const limit = typeof max === 'number' && Number.isInteger(max) && max >= 2 && max <= MAX_LIMIT ? max : DEFAULT_MAX;
   return { game: 'numbers', round: 1, max: limit, target: 1 + rng(limit), wrong: [], solved: false };
 }

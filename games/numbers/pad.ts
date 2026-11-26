@@ -3,12 +3,9 @@ import { html } from '/vendor/preact.js';
 import type { Action } from '../types.ts';
 import type { NumbersState } from './logic.ts';
 
-const STYLE = new URL('./numbers.css', import.meta.url).pathname;
-
 export function PadView({ state, send }: { state: NumbersState; send: (action: Action) => void }) {
   const options = Array.from({ length: state.max }, (_, i) => i + 1);
-  return html`<section class="numbers-pad">
-    <link rel="stylesheet" href=${STYLE} />
+  return html`<section class="pad">
     <h2>${state.solved ? 'Isso!' : 'Quantos tem?'}</h2>
     ${state.solved
       ? html`<button class="next" type="button" onClick=${() => send({ type: 'next' })}>Próximo</button>`

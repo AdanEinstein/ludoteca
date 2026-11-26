@@ -1,6 +1,6 @@
 # 0006. Contrato do módulo de jogo
 
-- Status: aceito (nomes atualizados pelos ADRs 0008, 0009 e 0010)
+- Status: aceito (nomes atualizados pelos ADRs 0008, 0009 e 0010; contrato estendido pelo [ADR 0012](0012-plataforma-consolidada-antes-do-primeiro-jogo.md), que o torna a referência)
 - Data: 2026-11-25
 
 ## Contexto
@@ -12,23 +12,22 @@ para não adivinhar a abstração. O jogo 1 (`numbers`, "Quantos tem?") já most
 Um jogo é uma pasta `games/<id>/`, com `<id>` em inglês, contendo:
 
 - `logic.ts` (roda no **servidor**, sem I/O):
-  - `meta = { id, name, theme, players: { min, max } }`. `theme` filtra o catálogo (`kids`, `board`...). `name` é o texto exibido, em português.
-  - `create({ rng, ...config }) -> State`: estado **serializável em JSON e público** (a TV e os celulares veem tudo).
-  - `reduce(state, action, { rng }) -> State`: **sem mutar**. Ação inválida ou fora de hora devolve o **mesmo objeto**;
+  - `meta = { id, name, theme, players: { min, max }, actions, ... }` (campos completos no ADR 0012). `theme` filtra o catálogo (`kids`, `board`...). `name` é o texto exibido, em português.
+  - `create({ rng, players, config }) -> State`: estado **serializável em JSON** (por padrão todos veem tudo; `view` do ADR 0012 pode esconder partes).
+  - `reduce(state, action, { rng, player }) -> State`: **sem mutar**. Ação inválida ou fora de hora devolve o **mesmo objeto**;
     é assim que a plataforma sabe que nada mudou e evita difundir.
   - `rng(n)` é injetado (inteiro em `[0, n)`), para os testes serem determinísticos. Sem laços que dependam do `rng` terminar.
 - `tv.ts` (navegador da TV): exporta o componente Preact `TvView({ state })`.
 - `pad.ts` (celular): exporta o componente Preact `PadView({ state, send })`, onde `send(action)` envia `{ type, value? }`.
 - `logic.test.ts`: testes com `node:test`.
 
-A plataforma só admite ações cujo `type` está na lista de `server/rooms.ts` e cujo `value`, se houver, é inteiro.
-O jogo ainda valida o conteúdo. Jogo novo = nova pasta + uma linha em `games/index.ts` + o `type` novo na lista.
+A plataforma só admite ações cujo `type` está em `meta.actions` do jogo; o jogo valida o conteúdo.
+Jogo novo = nova pasta + uma linha em `games/index.ts`.
 
 ## Alternativas
 - Plugins carregados dinamicamente a partir de pastas: sem terceiros, não há por que pagar a complexidade.
-- Estado privado por jogador (cartas na mão): ainda não há jogo que precise. Entra com o primeiro (jogos de cartas), e o contrato muda por ADR.
+- Estado privado por jogador (cartas na mão): resolvido pelo ADR 0012 (`view`).
 
 ## Consequências
-- A lista de ações aceitas vive na plataforma, então um jogo novo mexe em dois lugares. É de propósito: o limite de entrada fica visível.
-- Um estado público simplifica, mas não serve a jogos com informação escondida.
-- Ainda há um único jogo: o contrato será revisto ao criar o 2º (memória ou jogo da velha), conforme o plano do one-pager.
+- A lista de ações aceitas vive no próprio jogo (`meta.actions`), mas é a plataforma que a aplica, então o limite de entrada continua visível.
+- A revisão prevista para o 2º jogo foi antecipada: o ADR 0012 acrescentou menu, assentos, estado por espectador, opções e identidade visual por jogo.

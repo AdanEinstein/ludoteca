@@ -1,0 +1,23 @@
+/* "Quantos tem?" on the phone: big targets, slow transitions, no flashing, no sound. Scoped by [data-game="numbers"] (ADR 0012). */
+[data-game="numbers"] {
+  --ink: #1f3b57;
+  --accent: #cc7425;
+  --slow: 500ms;
+  display: block;
+  min-height: 100vh;
+  padding: 1.25rem;
+  background: #faf6ee;
+  color: var(--ink);
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+}
+[data-game="numbers"] h2, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="numbers"] button { font: inherit; cursor: pointer; border: 0; border-radius: 1.25rem; background: var(--ink); color: #faf6ee; }
+[data-game="numbers"] button:focus-visible { outline: 0.25rem solid var(--accent); outline-offset: 0.2rem; }
+[data-game="numbers"] button:disabled { cursor: default; }
+[data-game="numbers"] .pad { display: grid; gap: 1.5rem; max-width: 32rem; margin: 3rem auto 0; }
+[data-game="numbers"] h2 { font-size: 1.6rem; text-align: center; }
+[data-game="numbers"] .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+[data-game="numbers"] .options button { width: 100%; min-height: 6.5rem; font-size: 3rem; font-weight: 700; transition: opacity var(--slow) ease; }
+[data-game="numbers"] .options button.tried { opacity: 0.2; }
+[data-game="numbers"] .next { width: 100%; min-height: 9rem; font-size: 2.2rem; font-weight: 700; background: var(--accent); color: #fff; }

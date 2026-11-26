@@ -11,7 +11,7 @@ import QRCode from 'qrcode';
 import { attachWebSocket } from './ws.ts';
 import { createRooms } from './rooms.ts';
 import { networkKey } from './net.ts';
-import { games, defaultGame } from '../games/index.ts';
+import { games, themes } from '../games/index.ts';
 import type { Rng } from '../games/types.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,7 +27,17 @@ const CONTENT_TYPES: Record<string, string> = {
   '.css': 'text/css; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
   '.ico': 'image/x-icon',
+  '.json': 'application/json',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.wav': 'audio/wav',
   '.webmanifest': 'application/manifest+json',
 };
 // No inline anything: everything comes from 'self'. The WebSocket is same-host. The QR SVG comes from the server and uses attributes only.
@@ -72,13 +82,14 @@ async function browserCode(file: string): Promise<string> {
   return code;
 }
 
-export type AppOptions = { rng?: Rng; makeQr?: (url: string) => Promise<string> };
+export type AppOptions = { rng?: Rng; makeQr?: (url: string) => Promise<string>; showDrafts?: boolean };
 
 export function createAppServer({
   rng = (n) => randomInt(n),
   makeQr = (url) => QRCode.toString(url, { type: 'svg', margin: 2 }),
+  showDrafts = Boolean(process.env.LUDOTECA_DRAFTS), // games marked `draft` only show up with LUDOTECA_DRAFTS=1 (pnpm dev)
 }: AppOptions = {}): http.Server {
-  const rooms = createRooms({ games, defaultGame, rng, makeQr });
+  const rooms = createRooms({ games, themes, showDrafts, rng, makeQr });
   const trustProxy = Boolean(process.env.TRUST_PROXY);
   const networkOf = (req: http.IncomingMessage): string =>
     networkKey(trustProxy ? String(req.headers['x-forwarded-for'] ?? '').split(',')[0]?.trim() : req.socket.remoteAddress);

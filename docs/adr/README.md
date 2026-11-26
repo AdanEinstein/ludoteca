@@ -12,9 +12,10 @@ Modelo: `NNNN-titulo-curto.md` com Contexto, Decisão, Alternativas e Consequên
 | [0003](0003-abrir-a-tv-app-tizen-e-comando-de-rede.md) | Abrir a Ludoteca na TV: app Tizen casca + comando de rede | aceito |
 | [0004](0004-node-nativo-primeiro.md) | Node nativo primeiro, dependências só quando indispensáveis | aceito |
 | [0005](0005-front-end-sem-framework-e-sem-build.md) | Front-end sem framework e sem etapa de build | aceito |
-| [0006](0006-contrato-do-modulo-de-jogo.md) | Contrato do módulo de jogo | aceito |
+| [0006](0006-contrato-do-modulo-de-jogo.md) | Contrato do módulo de jogo | aceito (estendido pelo 0012) |
 | [0007](0007-seguranca-do-servidor-local.md) | Segurança do servidor local | aceito |
 | [0008](0008-codigo-em-ingles-interface-em-portugues.md) | Código em inglês, interface em português | aceito |
 | [0009](0009-preact-com-htm-sem-etapa-de-build.md) | Preact com htm, sem etapa de build | aceito (substitui em parte o 0005) |
 | [0010](0010-typescript-executado-direto-pelo-node.md) | TypeScript executado direto pelo Node | aceito |
 | [0011](0011-remover-astryx-e-stylex.md) | Remover Astryx e StyleX | aceito |
+| [0012](0012-plataforma-consolidada-antes-do-primeiro-jogo.md) | Plataforma consolidada antes do primeiro jogo: menu, assentos, identidade e opções | aceito |

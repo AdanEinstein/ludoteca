@@ -1,0 +1,20 @@
+/* "Quantos tem?" on the TV. Every rule starts with [data-game="numbers"]: the game owns its look and the platform owns none of it (ADR 0012). */
+[data-game="numbers"] {
+  --ink: #1f3b57;
+  --accent: #cc7425;
+  --slow: 500ms;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: #faf6ee;
+  color: var(--ink);
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+}
+[data-game="numbers"] h2, [data-game="numbers"] p, [data-game="numbers"] ul { margin: 0; padding: 0; list-style: none; }
+[data-game="numbers"] .tv { display: grid; justify-items: center; gap: 2.5rem; }
+[data-game="numbers"] .number { font-size: 9rem; font-weight: 700; line-height: 1; color: rgb(31 59 87 / 0.25); transition: color var(--slow) ease; }
+[data-game="numbers"] .solved .number { color: var(--ink); }
+[data-game="numbers"] .pieces { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; max-width: 42rem; }
+[data-game="numbers"] .piece { width: 5.5rem; height: 5.5rem; border-radius: 50%; background: var(--ink); transition: background-color calc(var(--slow) * 1.5) ease; }
+[data-game="numbers"] .solved .piece { background: var(--accent); }

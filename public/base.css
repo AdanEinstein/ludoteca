@@ -1,21 +1,28 @@
-/* Shared tokens and base (logo palette, brand/GUIDELINES.md). Motion is always slow and optional. */
-:root {
+/* Platform base (ADR 0012). Only what every screen shares: box model, [hidden], reduced motion. The look of platform screens
+   lives in .shell and .overlay (brand tokens, brand/GUIDELINES.md); the look of a game lives in the game's own CSS. */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Empty canvas for a game: nothing is inherited from the platform. :where() keeps specificity at zero, so the game's CSS always wins. */
+:where(.game-root) { all: initial; display: block; }
+
+/* Platform screens (pairing, menu) and overlays (join prompt, exit button). A game never sits inside them, so tokens do not leak. */
+.shell, .overlay {
   --blue: #1f3b57;
   --amber: #cc7425;
   --cream: #faf6ee;
   --white: #fff;
-  --mist: #e3ddcf;
   --radius: 1.25rem;
-  --slow: 500ms;
-  color-scheme: light;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+  color: var(--blue);
 }
-*, *::before, *::after { box-sizing: border-box; }
-html { background: var(--cream); color: var(--blue); font-family: system-ui, "Segoe UI", Roboto, sans-serif; line-height: 1.4; }
-body { margin: 0; min-height: 100vh; }
-h1, h2, p { margin: 0; }
-ul { list-style: none; margin: 0; padding: 0; }
-button { font: inherit; cursor: pointer; border: 0; border-radius: var(--radius); background: var(--blue); color: var(--cream); }
-button:focus-visible { outline: 0.25rem solid var(--amber); outline-offset: 0.2rem; }
-button:disabled { cursor: default; }
-[hidden] { display: none !important; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+.shell { min-height: 100vh; background: var(--cream); }
+.shell h1, .shell h2, .shell p, .shell fieldset, .overlay p { margin: 0; }
+.shell ul { list-style: none; margin: 0; padding: 0; }
+.shell button, .overlay button { font: inherit; cursor: pointer; border: 0; border-radius: var(--radius); background: var(--blue); color: var(--cream); }
+.shell button:focus-visible, .overlay button:focus-visible { outline: 0.25rem solid var(--amber); outline-offset: 0.2rem; }
+.shell button:disabled { cursor: default; }
+.status { font-size: 1.2rem; opacity: 0.7; }
