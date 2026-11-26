@@ -7,7 +7,7 @@ import { read, write } from './storage.ts';
 // UI text, Portuguese (ADR 0008)
 const NOTICE_TEXT: Record<NoticeReason, string> = {
   too_few: 'Faltam controles para este jogo.',
-  too_many: 'Tem controles demais para este jogo.',
+  too_many: 'Tem controles demais para este jogo. Feche a Ludoteca nos outros aparelhos e tente de novo.',
 };
 
 /** Every game has a `logo.svg` in its folder (checked by games/contract.test.ts). */
@@ -70,7 +70,7 @@ export function Menu({ catalog, notice, onStart }: Props) {
   const shown = catalog.games.filter((game) => theme === 'all' || game.theme === theme);
   return html`<section class="menu">
     <h2 class="menu-title">Escolha um jogo</h2>
-    ${notice ? html`<p class="status" role="status">${NOTICE_TEXT[notice]}</p>` : null}
+    ${notice ? html`<p class="notice" role="alert">${NOTICE_TEXT[notice]}</p>` : null}
     ${catalog.themes.length > 1
       ? html`<nav class="chips" aria-label="Temas">
           ${[{ id: 'all', name: 'Todos' }, ...catalog.themes].map(
