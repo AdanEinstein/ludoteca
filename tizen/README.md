@@ -51,3 +51,9 @@ nos comandos abaixo, `TV` é o IP atual dela.
 
 - Instala só na TV com modo desenvolvedor (a sua). Para outras TVs seria preciso publicar na loja da Samsung.
 - O certificado de desenvolvedor tem validade. Quando expirar, gere outro e reinstale o app.
+
+## Atualizar depois
+
+A skill `ludoteca-tv-deploy` (`.claude/skills/ludoteca-tv-deploy/`) faz os passos 4 a 6 sozinha: descobre o IP atual da TV, empacota uma cópia,
+instala e reabre o app. Comece por `python3 .claude/skills/ludoteca-tv-deploy/scripts/deploy_tv.py --dry-run` (não toca na TV).
+Mudou só o conteúdo do servidor? Basta `--relaunch-only`.

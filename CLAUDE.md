@@ -11,4 +11,6 @@
 - **Jogo = pasta `games/<id>/`** com `logic.ts` puro, `tv.ts`, `pad.ts`, `logo.svg`, `tv.css`/`pad.css` (escopados em `[data-game="<id>"]`) e testes
   (ADR 0006 e 0012). Cada jogo tem identidade própria: a plataforma não impõe visual a ele. `games/contract.test.ts` confere o contrato.
   Passo a passo em `docs/novo-jogo.md`.
+- **App da TV:** o app Tizen (`tizen/`) é só uma casca; para reinstalar ou relançar use a skill `ludoteca-tv-deploy`
+  (`.claude/skills/`). Ela começa por `--dry-run` e só mexe na TV quando o usuário pede.
 - **Verificação:** `pnpm test` e `pnpm typecheck`. Servidor: `pnpm start` (`pnpm dev` mostra também os jogos em rascunho).
