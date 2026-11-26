@@ -3,6 +3,7 @@ import { html, useState } from '/vendor/preact.js';
 import type { Catalog, CatalogGame, NoticeReason } from '../server/protocol.ts';
 import type { OptionValue } from '../games/types.ts';
 import { read, write } from './storage.ts';
+import { tableProblem } from './table.ts';
 
 // UI text, Portuguese (ADR 0008)
 const NOTICE_TEXT: Record<NoticeReason, string> = {
@@ -29,9 +30,9 @@ const savedConfig = (game: CatalogGame): Record<string, OptionValue> => {
   );
 };
 
-type Props = { catalog: Catalog; notice: NoticeReason | null; onStart: (id: string, config: Record<string, OptionValue>) => void };
+type Props = { catalog: Catalog; notice: NoticeReason | null; seated: number; onStart: (id: string, config: Record<string, OptionValue>) => void };
 
-export function Menu({ catalog, notice, onStart }: Props) {
+export function Menu({ catalog, notice, seated, onStart }: Props) {
   const [picked, setPicked] = useState<CatalogGame | null>(null);
   const [theme, setTheme] = useState('all'); // catalog filter: 'all' or a theme id
   const [config, setConfig] = useState<Record<string, OptionValue>>({});
@@ -79,15 +80,17 @@ export function Menu({ catalog, notice, onStart }: Props) {
         </nav>`
       : null}
     <ul class="cards">
-      ${shown.map(
-        (game) => html`<li key=${game.id}>
-          <button class="card" type="button" onClick=${() => choose(game)}>
+      ${shown.map((game) => {
+        const problem = tableProblem(game, seated); // a game that does not fit the table says why, instead of failing after the tap
+        return html`<li key=${game.id}>
+          <button class="card" type="button" disabled=${problem !== null} onClick=${() => choose(game)}>
             <img class="cover" src=${logoOf(game)} alt="" />
             <span class="name">${game.name}</span>
             <small>${playersText(game.players)}</small>
+            ${problem ? html`<small class="why">${problem}</small>` : null}
           </button>
-        </li>`,
-      )}
+        </li>`;
+      })}
     </ul>
   </section>`;
 }

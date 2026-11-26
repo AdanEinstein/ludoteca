@@ -118,6 +118,7 @@ test('full flow: TV, phone, accept, game, reconnect', async () => {
   const ok = await pad.next();
   assert.equal(ok.type, 'ok');
   assert.equal((await pad.next()).type, 'catalog');
+  assert.deepEqual(await pad.next(), { type: 'table', seat: 0, seats: [0] });
   assert.equal((await pad.next()).state, null, 'the menu');
   assert.equal((await tv.next()).count, 1);
 
@@ -137,6 +138,7 @@ test('full flow: TV, phone, accept, game, reconnect', async () => {
   await pad2.opened;
   assert.equal((await pad2.next()).type, 'ok');
   assert.equal((await pad2.next()).type, 'catalog');
+  assert.deepEqual(await pad2.next(), { type: 'table', seat: 0, seats: [0] }, 'the token keeps the seat');
   assert.equal((await pad2.next()).state.solved, true);
 
   tv.ws.close();

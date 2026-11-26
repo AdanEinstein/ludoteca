@@ -104,6 +104,30 @@ for (const [id, game] of Object.entries(games)) {
     }
   });
 
+  // A game with more than one controller (ADR 0023): every table size it accepts must start, every seat must be able to act and
+  // to see its own view, and seats may leave and come back (join/leave) without breaking the state.
+  test(`game "${id}": works for every table size and seat`, () => {
+    const { min, max } = game.meta.players;
+    for (const size of new Set([min, max])) {
+      const players = Array.from({ length: size }, (_, seat) => seat);
+      const state = game.create({ rng: seq, players, config: defaults(game) });
+      assert.deepEqual(JSON.parse(JSON.stringify(state)), state, `create for ${size} players survives JSON`);
+      const frozen = deepFreeze(JSON.parse(JSON.stringify(state)) as GameState);
+      for (const seat of players) {
+        for (const type of game.meta.actions) {
+          assert.doesNotThrow(() => game.reduce(frozen, { type }, { rng: seq, player: seat }), `seat ${seat} of ${size}: reduce("${type}")`);
+        }
+        if (game.view) {
+          const seen = game.view(frozen, seat);
+          assert.equal(seen.game, id, `view(${seat}) keeps the game id`);
+          assert.deepEqual(JSON.parse(JSON.stringify(seen)), seen, `view(${seat}) survives JSON`);
+        }
+      }
+      if (game.leave) assert.doesNotThrow(() => game.leave?.(frozen, players[players.length - 1] as number, { rng: seq }), 'leave');
+      if (game.join) assert.doesNotThrow(() => game.join?.(frozen, size, { rng: seq }), 'join');
+    }
+  });
+
   for (const kind of game.meta.styles ?? []) {
     test(`game "${id}": ${kind}.css only touches its own area`, () => {
       assert.deepEqual(cssProblems(id, readFileSync(file(id, `${kind}.css`), 'utf8')), []);

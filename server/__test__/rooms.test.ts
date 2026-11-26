@@ -358,6 +358,25 @@ test('seats: each controller gets one, the game receives them and a reconnection
   assert.ok(c.open);
 });
 
+test('table: each phone learns its own seat and who is connected; the TV gets the seats; it follows joins and leaves', async () => {
+  const { tv, pad } = setup();
+  const t = tv();
+  const id = roomId((await roomOf(t)).url);
+  const a = joined(t, pad, id);
+  assert.deepEqual(a.last('table'), { type: 'table', seat: 0, seats: [0] });
+  assert.deepEqual(t.last('players'), { type: 'players', count: 1, seats: [0] });
+  const b = joined(t, pad, id);
+  assert.deepEqual(b.last('table'), { type: 'table', seat: 1, seats: [0, 1] });
+  assert.deepEqual(a.last('table'), { type: 'table', seat: 0, seats: [0, 1] }, 'the others hear about the new seat');
+  const token = b.last('ok')?.token as string;
+  b.close();
+  await tick();
+  assert.deepEqual(a.last('table'), { type: 'table', seat: 0, seats: [0] });
+  assert.deepEqual(t.last('players'), { type: 'players', count: 1, seats: [0] });
+  const b2 = joined(t, pad, id, token);
+  assert.deepEqual(b2.last('table'), { type: 'table', seat: 1, seats: [0, 1] }, 'a returning token keeps its seat');
+});
+
 test('view: the TV and each phone can see different things', async () => {
   const { tv, pad } = setup();
   const t = tv();
