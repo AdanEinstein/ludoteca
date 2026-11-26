@@ -24,7 +24,6 @@ export const meta: GameMeta = {
     },
   ],
   styles: ['tv', 'pad'],
-  draft: true,
 };
 
 /** The whole alphabet, five words per letter (grouped by letter). `id` names the picture (art.ts). The first letter of `word`, without accent, is `letter`. */
